@@ -880,7 +880,7 @@ function renderWeather() {
     wPhoto.style.backgroundImage = 'radial-gradient(circle at 38% 32%,#ffeaa6,#f2b845 44%,#c8831d 76%,#734911 100%)';
     wPhoto.style.boxShadow = '0 0 30px rgba(242,184,69,.20)';
   } else {
-    wPhoto.style.backgroundImage = "url('assets/moon-photo.jpg')";
+    wPhoto.style.backgroundImage = "url('assets/moon-cutout.png')";
     wPhoto.style.boxShadow = 'none';
   }
 
@@ -1057,7 +1057,7 @@ function renderSpace() {
        bz < -5 ? `Southward Bz ${fmt(bz, 1)} nT.<br>Aurora watch.` :
                  `Quiet conditions.<br>Aurora unlikely.`);
   const badge = $('spaceBadge');
-  badge.style.display = Number.isFinite(kp) && kp < 5 ? 'grid' : 'none';
+  if (badge) badge.style.display = 'none';
 }
 
 function renderSunspots() {
