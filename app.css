@@ -62,43 +62,59 @@ button{font:inherit}
 
 /* --- Preview-faithful redesign overrides --- */
 :root{--moon-phase:.5;--moon-shadow-shift:18px}
-.link-card{grid-template-columns:minmax(0,1fr) 108px auto;min-height:82px;padding:12px 12px 12px 14px;gap:12px;background:linear-gradient(180deg,rgba(7,18,26,.9),rgba(6,15,22,.9));border-color:rgba(71,96,110,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
-.link-card:before,.link-card:after{display:none}
-.link-card .card-copy{position:relative;z-index:2;max-width:none;align-self:start}
-.link-card .chev{align-self:center;font-size:18px;color:#92a6b0}
-.card-art{position:relative;width:108px;height:50px;border-radius:9px;overflow:hidden;background:#09131d center/cover no-repeat;border:1px solid rgba(129,154,170,.08);box-shadow:inset 0 0 30px rgba(0,0,0,.22)}
-.art-milkyway{background-image:url('assets/art-milkyway.svg');}
-.art-aurora{background-image:url('assets/art-aurora.svg');}
-.art-saturn{background:radial-gradient(circle at 50% 58%,rgba(91,68,48,.18),transparent 52%),linear-gradient(180deg,#060d14,#0b1520)}
-.art-saturn:before{content:"";position:absolute;inset:7px 6px;background:url('assets/art-saturn.svg') center right/88px auto no-repeat;opacity:.98}
-.art-aurora:after{content:"";position:absolute;right:8px;top:10px;width:24px;height:24px;border-radius:50%;border:1.8px solid rgba(100,233,159,.9);box-shadow:0 0 0 5px rgba(100,233,159,.08),0 0 18px rgba(100,233,159,.18)}
-.art-aurora:before{content:"";position:absolute;right:16px;top:18px;width:7px;height:7px;border-radius:50%;background:#66e69d;box-shadow:-12px 9px 0 -2px rgba(102,230,157,.95)}
+.link-card{display:grid;grid-template-columns:minmax(0,1fr) 132px 12px;min-height:82px;padding:13px 14px;gap:12px;background:linear-gradient(180deg,rgba(6,16,24,.96),rgba(5,13,20,.96));border-color:rgba(58,80,94,.56);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.link-card:before,.link-card:after{display:none!important}
+.link-card .card-copy{position:relative;z-index:2;max-width:none;align-self:center}
+.link-card .chev{align-self:center;justify-self:end;font-size:18px;color:#a2b4bd}
+.card-art{position:relative;width:132px;height:56px;border-radius:8px;overflow:hidden;background:#09131d center/cover no-repeat;border:0;box-shadow:none;opacity:.98}
+.art-milkyway{background-image:url('assets/preview-tonight-card.png');background-position:center right}
+.art-aurora{background-image:url('assets/preview-space-card.png');background-position:center right}
+.art-saturn,.art-moonthumb,.art-meteorthumb,.art-issthumb,.art-aurorathumb,.art-eclipsethumb,.art-sunthumb{background-position:center right;background-size:cover}
+.art-saturn{background-image:url('assets/preview-event-card.png')}
+.art-aurora:after{content:"";position:absolute;right:7px;top:11px;width:28px;height:28px;border-radius:50%;border:1.8px solid rgba(100,233,159,.9);box-shadow:0 0 0 6px rgba(100,233,159,.08),0 0 18px rgba(100,233,159,.18)}
+.art-aurora:before{content:"";position:absolute;right:17px;top:20px;width:8px;height:8px;border-radius:50%;background:#66e69d;box-shadow:-13px 9px 0 -2px rgba(102,230,157,.95)}
+.art-moonthumb{background-image:url('assets/preview-astro-moon.png');background-color:#07121b}
+.art-meteorthumb{background-image:url('assets/preview-astro-meteor.png');background-color:#07121b}
+.art-issthumb{background-image:url('assets/preview-astro-iss.png');background-color:#07121b}
+.art-aurorathumb{background-image:url('assets/preview-space-card.png')}
+.art-eclipsethumb{background:radial-gradient(circle at 60% 50%, #040a12 0 22%, #111b28 23% 36%, rgba(158,183,209,.32) 37% 41%, transparent 42%), linear-gradient(180deg,#07121b,#07121b)}
+.art-sunthumb{background:radial-gradient(circle at 60% 50%, #ffd98b 0 18%, #d8a959 19% 31%, rgba(255,214,146,.18) 32% 50%, transparent 51%), linear-gradient(180deg,#07121b,#07121b)}
 .status-icon{opacity:.85}
 .weather-hero{min-height:156px}
-.weather-hero:before{width:84px;height:84px;right:10px;top:18px;border-radius:50%;background:#0a131d url('assets/moon-texture.svg') center/cover no-repeat;filter:none;opacity:.98;box-shadow:inset -20px -12px 24px rgba(0,0,0,.35),0 0 26px rgba(181,193,202,.05)}
-.weather-hero:after{content:"";position:absolute;right:calc(10px - var(--moon-shadow-shift));top:14px;width:86px;height:86px;border-radius:50%;background:radial-gradient(circle at 58% 45%,rgba(8,14,20,.96) 0 58%,rgba(8,14,20,.92) 68%,rgba(8,14,20,.55) 77%,rgba(8,14,20,0) 82%);mix-blend-mode:normal;pointer-events:none}
+.weather-hero:before{width:92px;height:92px;right:6px;top:15px;border-radius:50%;background:transparent url('assets/preview-weather-moon.png') center/contain no-repeat;filter:none;opacity:1;box-shadow:none}
+.weather-hero:after{display:none}
 .home-alert{background:rgba(59,27,24,.26)}
-.summary-block{background:linear-gradient(180deg,rgba(9,20,29,.78),rgba(8,17,25,.88));border:1px solid rgba(65,88,101,.44);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
-.window{background:linear-gradient(180deg,rgba(9,20,29,.78),rgba(8,17,25,.88));border-color:rgba(65,88,101,.44)}
-.event-row{grid-template-columns:14px 1fr 70px;gap:12px;padding:13px 12px}
+.summary-block,.window,.kp-head,.kp-scale,.solar-cell,.chart-wrap,.advanced-callout,.radar-wrap,.event-list,.status-cell,.sheet,.hero,.home-alert,.aurora-meter{backdrop-filter:none;-webkit-backdrop-filter:none}
+.summary-block{background:linear-gradient(180deg,rgba(7,17,25,.92),rgba(6,15,23,.94));border:1px solid rgba(61,83,97,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.window{background:linear-gradient(180deg,rgba(7,17,25,.92),rgba(6,15,23,.94));border-color:rgba(61,83,97,.36);padding:0;margin-top:24px}
+.window .link-kicker{padding:0 0 0 0;margin-bottom:8px}
+.window-time{padding:0 0 0 0}
+.quality-bars{height:88px;gap:3px;background:linear-gradient(180deg,rgba(10,21,29,.3),rgba(10,21,29,.3));margin-top:14px}
+.quality-bar{background:linear-gradient(180deg,#8cc08f,#50715a);opacity:.95}.quality-bar.best{background:linear-gradient(180deg,#9cd49e,#618869)}
+.event-row{grid-template-columns:12px 1fr 62px;gap:12px;padding:12px 12px}
 .event-symbol{display:none}
-.event-dot{width:9px;height:9px;border-radius:50%;align-self:start;margin-top:5px;background:#cdbf9f;box-shadow:0 0 0 3px rgba(205,191,159,.08)}
-.event-dot.moon{background:#d9d8d4}
-.event-dot.venus{background:#e9e4c7}
-.event-dot.mars{background:#c97247}
-.event-dot.jupiter{background:#e7b97d}
-.event-dot.saturn{background:#d8a66a}
-.event-dot.meteor{background:#69baff}
-.event-dot.iss{background:#b6b1a5}
-.event-row .event-title{font-size:11px;color:#e4ebef}
-.event-row .event-meta{font-size:9px;color:#90a3ac}
-.event-visual{height:36px;background:center right/contain no-repeat;opacity:.95}
-.event-visual.moon{background-image:url('assets/moon-texture.svg');background-size:36px 36px;background-position:right center}
+.event-dot{width:8px;height:8px;border-radius:50%;align-self:start;margin-top:6px;background:#cdbf9f;box-shadow:0 0 0 3px rgba(205,191,159,.08)}
+.event-dot.moon{background:#d9d8d4}.event-dot.venus{background:#f1edd9}.event-dot.mars{background:#cf7b51}.event-dot.jupiter{background:#e7bb82}.event-dot.saturn{background:#d7ac73}.event-dot.meteor{background:#79bbff}.event-dot.iss{background:#b7b1a3}
+.event-row .event-title{font-size:11px;color:#e4ebef}.event-row .event-meta{font-size:9px;color:#90a3ac}
+.event-visual{height:34px;background:center right/contain no-repeat;opacity:.97}
+.event-visual.moon{background-image:url('assets/preview-astro-moon.png');background-size:34px 34px;background-position:right center}
 .event-visual.saturn{background-image:url('assets/art-saturn.svg')}
 .event-visual.venus{background:radial-gradient(circle at 38% 32%,#f3efdc 0 18%,#d8ccaa 33%,#927d5c 66%,transparent 67%) center right/32px 32px no-repeat}
 .event-visual.jupiter{background:radial-gradient(circle at 38% 34%,#f3d2a4 0 20%,#d1a26c 40%,#7e6048 66%,transparent 67%) center right/34px 34px no-repeat}
 .event-visual.mars{background:radial-gradient(circle at 38% 34%,#d87b4f 0 20%,#a94d31 40%,#602e23 66%,transparent 67%) center right/30px 30px no-repeat}
-.event-visual.meteor{background-image:url('assets/art-meteor.svg')}
-.event-visual.iss{background-image:url('assets/art-iss.svg')}
+.event-visual.meteor{background-image:url('assets/preview-astro-meteor.png')}
+.event-visual.iss{background-image:url('assets/preview-astro-iss.png')}
 .aurora-meter{border-color:rgba(65,88,101,.44);background:linear-gradient(180deg,rgba(9,20,29,.78),rgba(8,17,25,.88))}
-.kp-head,.kp-scale,.solar-cell,.chart-wrap,.advanced-callout,.radar-wrap,.event-list,.status-cell,.window,.summary-block,.sheet,.link-card,.hero,.home-alert,.aurora-meter{backdrop-filter:none;-webkit-backdrop-filter:none}
+.cal-event{grid-template-columns:42px 20px 1fr auto;gap:12px;padding:13px 12px;border-top:1px solid var(--line-soft);align-items:center}
+.cal-art{width:16px;height:16px;border-radius:50%;background:#d8d6d0;position:relative;justify-self:center}
+.cal-art.newmoon{background:#f3f3f3}.cal-art.fullmoon{background:#f7f7f4}
+.cal-art.firstquarter{background:linear-gradient(90deg,#f6f5f0 0 50%, #051018 50% 100%);border:1px solid rgba(241,241,241,.6)}
+.cal-art.lastquarter{background:linear-gradient(90deg,#051018 0 50%, #f6f5f0 50% 100%);border:1px solid rgba(241,241,241,.6)}
+.cal-art.moon{background:#dad8d2}
+.cal-art.lunareclipse{background:radial-gradient(circle at 52% 52%,#b83d33 0 38%, #f6f3ec 39% 44%, transparent 45%), #07121b;border:1px solid rgba(241,241,241,.45)}
+.cal-art.eclipse{background:radial-gradient(circle at 52% 52%,#07121b 0 38%, #e9eef4 39% 47%, transparent 48%), #07121b}
+.cal-art.meteor{width:18px;height:18px;border-radius:0;background:url('assets/preview-astro-meteor.png') center/contain no-repeat}
+.cal-art.aurora{width:18px;height:18px;border-radius:0;background:url('assets/preview-space-card.png') center/cover no-repeat}
+.cal-art.sun{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#ffd98b 0 33%, #d5a75e 34% 60%, transparent 61%)}
+.cal-title{font-size:11px}.cal-desc{font-size:9px;color:var(--muted);margin-top:4px;line-height:1.35}
+
