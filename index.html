@@ -2,127 +2,545 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#030b11">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#050a11">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SKYLAB">
+<meta name="description" content="Live conditions. Above and around you. Weather, space weather, astronomy and air quality in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<title>SKYLAB — Live Earth & Sky</title>
+<title>SKYLAB — Live Earth &amp; Sky</title>
 </head>
 <body>
+
+<!-- ============================================================
+     Icon sprite. Stroke icons inherit currentColor.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2s6.4-5.7 6.4-11.4a6.4 6.4 0 1 0-12.8 0c0 5.7 6.4 11.4 6.4 11.4Z"/><circle cx="12" cy="9.8" r="2.3"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="4.8" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19.2" r="1.6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 12a8.2 8.2 0 1 1-2.6-6"/><path d="M20.4 3.6v4.8h-4.8"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.4V3.2"/><path d="m7.8 7.4 4.2-4.2 4.2 4.2"/><path d="M5 13.4v5.6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5.6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.8 4.6-7.4 7.4 7.4 7.4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.8 12.4 4.8 4.8L19.2 6.4"/></symbol>
+
+  <!-- status grid -->
+  <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.4 3.6c.7 7.4-2.7 12.6-8.4 13.3-3.2.4-5.6-1-6.2-3.3-.8-3.2 2-6.1 6.1-7 3-.7 5.9-1.9 8.5-3Z"/>
+    <path d="M4.4 20.4c.6-3.6 2.3-6.6 5-8.8"/>
+  </symbol>
+  <symbol id="i-sun-fill" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <circle cx="12" cy="12" r="4.1" fill="currentColor" stroke="none"/>
+    <path d="M12 1.6v3.1M12 19.3v3.1M1.6 12h3.1M19.3 12h3.1M4.7 4.7l2.2 2.2M17.1 17.1l2.2 2.2M19.3 4.7l-2.2 2.2M6.9 17.1l-2.2 2.2"/>
+  </symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9.1"/>
+    <path d="M12 12 8.2 8.2"/>
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12s3.8-6.6 10-6.6S22 12 22 12s-3.8 6.6-10 6.6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.9"/>
+  </symbol>
+
+  <!-- weather conditions -->
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.4"/><path d="M12 1.8v3M12 19.2v3M1.8 12h3M19.2 12h3M4.8 4.8 6.9 6.9M17.1 17.1l2.1 2.1M19.2 4.8 17.1 6.9M6.9 17.1 4.8 19.2"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 15.6A8.8 8.8 0 0 1 8.4 3.6a8.8 8.8 0 1 0 12 12Z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 18.4h10.4a4.2 4.2 0 0 0 .6-8.36 6.2 6.2 0 0 0-11.9-2.2 5.2 5.2 0 0 0 .9 10.56Z"/></symbol>
+  <symbol id="i-cloud-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7.6" r="3"/><path d="M8 1.9v1.6M2.3 7.6h1.6M4 3.6l1.1 1.1M12 3.6l-1.1 1.1"/><path d="M9.6 19.4h7.8a3.5 3.5 0 0 0 .5-6.96 5.2 5.2 0 0 0-9.4-1.6 4.3 4.3 0 0 0 1.1 8.56Z"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 15h10.4a4.2 4.2 0 0 0 .6-8.36 6.2 6.2 0 0 0-11.9-2.2A5.2 5.2 0 0 0 6.8 15Z"/><path d="M8.4 18.2 7.4 20.6M12 18.2l-1 2.4M15.6 18.2l-1 2.4"/></symbol>
+  <symbol id="i-snow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.6v18.8M3.9 7.3l16.2 9.4M20.1 7.3 3.9 16.7"/></symbol>
+  <symbol id="i-storm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 14.6h10.4a4.2 4.2 0 0 0 .6-8.36 6.2 6.2 0 0 0-11.9-2.2 5.2 5.2 0 0 0 .9 10.56Z"/><path d="m13.2 14.6-3.4 4.4h3.2l-1.6 3"/></symbol>
+  <symbol id="i-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3.6 8.6h16.8M3.6 12.6h16.8M6.6 16.6h10.8"/></symbol>
+
+  <!-- navigation -->
+  <symbol id="i-nav-now" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+    <circle cx="12" cy="12" r="3.9" fill="currentColor" stroke="none"/>
+    <path d="M12 1.9v3.2M12 18.9v3.2M1.9 12h3.2M18.9 12h3.2M4.8 4.8l2.3 2.3M16.9 16.9l2.3 2.3M19.2 4.8l-2.3 2.3M7.1 16.9l-2.3 2.3"/>
+  </symbol>
+  <symbol id="i-nav-tonight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.7"/>
+    <path d="M12 3.3A8.7 8.7 0 0 1 20.7 12H12Z" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="i-nav-space" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+    <circle cx="12" cy="12" r="5.5"/>
+    <ellipse cx="12" cy="12" rx="10.6" ry="3.5" transform="rotate(-25 12 12)"/>
+  </symbol>
+  <symbol id="i-nav-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.3" y="4.8" width="17.4" height="16" rx="2.6"/><path d="M7.6 2.8v3.8M16.4 2.8v3.8M3.3 9.6h17.4"/>
+    <circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/>
+  </symbol>
+
+  <!-- misc -->
+  <symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.2 12h17.6M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 19V9M10 19V4.5M16 19v-7M22 19.4H2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 4.5v15l13-7.5Z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 4.5h3.6v15H7zM13.4 4.5H17v15h-3.6z"/></symbol>
+  <symbol id="i-telescope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 12.6 12.4-6.4 2.4 4.6-12.4 6.4Z"/><path d="M9.4 15.4 11 21M14.6 12.8 18 18"/><circle cx="6" cy="18.6" r="1.6"/></symbol>
+</defs></svg>
+
 <div class="app">
-<header class="topbar">
-  <div class="screen-heading">
-    <div class="screen-title" id="screenTitle">Now</div>
-    <div class="screen-subtitle" id="screenSubtitle">Live conditions</div>
-  </div>
-  <button class="location-btn" id="locationBtn" aria-label="Choose location" title="Choose location">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.33 6-11a6 6 0 1 0-12 0c0 5.67 6 11 6 11Z"/><circle cx="12" cy="10" r="2.1"/></svg>
-    <span id="locationName" class="sr-only">Choose location</span>
-  </button>
-</header>
-<div class="loader" id="loader"></div>
-<div class="error-banner" id="errorBanner"></div>
-<main>
-<section class="page active" data-page="now">
-  <div class="eyebrow"><span class="live-dot" id="updatedLabel">Waiting for location</span></div>
-  <div class="hero"><div class="hero-line"><div class="weather-orb" id="weatherOrb"><div class="orb-moon"></div></div><div><div class="hero-temp" id="nowTemp">—<span class="degree">°</span></div><div class="hero-condition" id="nowCondition">Ready when you are</div><div class="hero-sub" id="feelsLike">Use your location for live conditions.</div></div></div></div>
-  <div class="data-strip">
-    <div><div class="metric-label">Humidity</div><div class="metric-value" id="humidity">—</div><div class="metric-note" id="dewpoint">Dew —</div></div>
-    <div><div class="metric-label">Pressure</div><div class="metric-value" id="pressure">—</div><div class="metric-note">Sea level</div></div>
-    <div><div class="metric-label">Wind</div><div class="metric-value" id="wind">—</div><div class="metric-note" id="gust">Gust —</div></div>
-  </div>
-  <div class="briefing" id="nowBriefing">SKYLAB translates the raw forecast into a short briefing here.</div>
-  <div class="status-grid">
-    <div class="status-cell"><div class="status-head"><span class="status-name">Air quality</span><span class="status-icon">◌</span></div><div class="status-value" id="aqi">—</div><div class="status-desc" id="aqiText">Waiting for data</div></div>
-    <div class="status-cell"><div class="status-head"><span class="status-name">UV index</span><span class="status-icon">☼</span></div><div class="status-value" id="uv">—</div><div class="status-desc" id="uvText">Waiting for data</div></div>
-    <div class="status-cell"><div class="status-head"><span class="status-name">Sky score</span><span class="status-icon">✦</span></div><div class="status-value" id="skyScore">—</div><div class="status-desc" id="skyScoreText">Tonight</div></div>
-    <div class="status-cell"><div class="status-head"><span class="status-name">Visibility</span><span class="status-icon">◉</span></div><div class="status-value" id="visibility">—</div><div class="status-desc" id="visDesc">—</div></div>
-  </div>
-  <div class="home-alert hidden" id="homeAlert"><div class="home-alert-count" id="alertCount">0</div><div><div class="home-alert-title">Weather alert</div><div class="home-alert-text" id="alertText">No active NWS alerts</div></div><div class="chev">›</div></div>
-  <div class="link-row link-card tonight-card" data-go="tonight"><div class="card-copy"><div class="link-kicker">Tonight</div><div class="link-main" id="tonightTeaser">We’ll find the best sky window.</div></div><div class="card-art art-milkyway" aria-hidden="true"></div><div class="chev">›</div></div>
-  <div class="link-row link-card space-card" data-go="space"><div class="card-copy"><div class="link-kicker">Space weather</div><div class="link-main" id="spaceTeaser">Loading solar conditions…</div></div><div class="card-art art-aurora" aria-hidden="true"></div><div class="chev">›</div></div>
-  <div class="link-row link-card event-card" data-go="calendar"><div class="card-copy"><div class="link-kicker">Next notable event</div><div class="link-main" id="nextEventTeaser">Calculating the sky…</div></div><div class="card-art art-saturn" id="nextEventArt" aria-hidden="true"></div><div class="chev">›</div></div>
-</section>
-<section class="page" data-page="tonight">
-  <div class="eyebrow" id="tonightDate">Tonight</div>
-  <div class="summary-block tonight-summary">
-    <div class="link-kicker">WORTH GOING OUTSIDE?</div>
-    <div class="headline" id="worthOutside">CALCULATING</div>
-    <div class="lead" id="tonightSummary">Combining clouds, precipitation, visibility, darkness and moonlight.</div>
-    <div class="score-row">
-      <div><div class="score-label">Sky Score</div><div class="score-val" id="tSky">—</div><div class="score-note" id="tSkyNote">—</div><div class="mini-track"><div class="mini-fill" id="tSkyBar"></div></div></div>
-      <div><div class="score-label">Clouds</div><div class="score-val" id="tCloud">—</div><div class="score-note" id="tCloudNote">—</div><div class="mini-track"><div class="mini-fill" id="tCloudBar"></div></div></div>
-      <div><div class="score-label">Seeing</div><div class="score-val" id="tMoon">—</div><div class="score-note" id="tMoonNote">—</div><div class="mini-track"><div class="mini-fill" id="tMoonBar"></div></div></div>
-      <div><div class="score-label">Transparency</div><div class="score-val" id="tVis">—</div><div class="score-note" id="tVisNote">—</div><div class="mini-track"><div class="mini-fill" id="tVisBar"></div></div></div>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="back-btn hidden" id="backBtn" aria-label="Back"><svg><use href="#i-back"/></svg></button>
+      <div>
+        <div class="screen-title" id="screenTitle">Now</div>
+        <div class="screen-subtitle" id="screenSubtitle">Live conditions</div>
+      </div>
     </div>
-  </div>
-  <div class="window preview-window"><div class="link-kicker">Best Window</div><div class="window-time" id="bestWindow">—</div><div class="quality-bars" id="qualityBars"></div><div class="axis-row"><span>8 PM</span><span>10 PM</span><span>12 AM</span><span>2 AM</span><span>4 AM</span></div></div>
-  <div class="section-title preview-section-title">Worth Seeing</div><div id="visibleEvents"></div>
-  <div class="section-title preview-section-title">Aurora</div><div class="aurora-meter"><div><div class="event-title" id="auroraTitle">Checking geomagnetic conditions</div><div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div></div><div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div></div>
-  <details class="secondary-details"><summary>Light & photography</summary><div id="lightEvents"></div></details>
-  <div class="source-note">Sky score is a practical viewing estimate, not a professional seeing forecast.</div>
-</section>
-<section class="page" data-page="weather">
-  <div class="eyebrow">Weather · <span id="weatherLocation">—</span></div>
-  <div class="hero weather-hero" id="weatherHero"><div class="hero-temp" id="wTemp">—<span class="degree">°F</span></div><div class="hero-condition" id="wCond">—</div><div class="hero-sub" id="wSub">Best-match forecast</div></div>
-  <div class="weather-top-strip">
-    <div><div class="metric-label">H / L</div><div class="metric-value" id="wHighLow">—</div></div>
-    <div><div class="metric-label">Humidity</div><div class="metric-value" id="wHumidity">—</div></div>
-    <div><div class="metric-label">Pressure</div><div class="metric-value" id="wPressure">—</div></div>
-  </div>
-  <div class="weather-card rain-card">
-    <div class="weather-card-head"><div><div class="link-kicker">Rain Chances</div><div class="rain-big" id="rainChance">—</div><div class="event-meta">Today</div></div></div>
-    <svg class="mini-weather-chart" id="precipChart" viewBox="0 0 300 70" aria-label="Rain chance chart"></svg>
-  </div>
-  <div class="weather-card hourly-card"><div class="link-kicker">Hourly Forecast</div><div class="hour-strip" id="hourStrip"></div></div>
-  <div class="section-title weather-section-title">10-Day Forecast</div><div id="dailyForecast" class="weather-daily"></div>
-  <details class="secondary-details weather-advanced"><summary>Advanced weather</summary>
-    <div class="segmented"><button class="segment active" data-weather-tab="forecast">Temperature</button><button class="segment" data-weather-tab="details">Atmosphere</button><button class="segment" data-weather-tab="radar">Radar</button></div>
-    <div id="weatherForecastPanel"><div class="chart-wrap"><svg class="chart" id="tempChart" viewBox="0 0 560 180"></svg></div><div class="advanced-callout" id="modelCompareBtn"><div class="advanced-copy"><strong>Model comparison</strong><div>See how ECMWF, GFS and ICON compare.</div></div><span class="pill">ADVANCED</span></div></div>
-    <div id="weatherDetailsPanel" class="hidden"><div class="status-grid">
-      <div class="status-cell"><div class="status-name">Dew point</div><div class="status-value" id="dDew">—</div><div class="status-desc">Moisture comfort</div></div>
-      <div class="status-cell"><div class="status-name">CAPE</div><div class="status-value" id="dCape">—</div><div class="status-desc" id="dCapeText">Convective energy</div></div>
-      <div class="status-cell"><div class="status-name">Cloud base</div><div class="status-value" id="dCloudBase">—</div><div class="status-desc">Estimated altitude</div></div>
-      <div class="status-cell"><div class="status-name">Freezing level</div><div class="status-value" id="dFreeze">—</div><div class="status-desc">Estimated altitude</div></div>
-    </div><div class="section-title">Cloud layers</div><div id="cloudLayers"></div><div class="section-title">Solar & atmosphere</div><div class="data-strip"><div><div class="metric-label">Radiation</div><div class="metric-value" id="dSolar">—</div><div class="metric-note">W/m²</div></div><div><div class="metric-label">Rain rate</div><div class="metric-value" id="dRain">—</div><div class="metric-note">in/hr</div></div><div><div class="metric-label">Gust</div><div class="metric-value" id="dGust">—</div><div class="metric-note">mph</div></div><div><div class="metric-label">UV</div><div class="metric-value" id="dUv">—</div><div class="metric-note">index</div></div></div></div>
-    <div id="weatherRadarPanel" class="hidden"><div class="radar-wrap"><div id="radarMap"></div></div><div class="source-note" id="radarNote">Loading radar…</div></div>
-  </details>
-</section>
-<section class="page" data-page="space">
-  <div class="eyebrow">Space weather · live near Earth</div>
-  <div class="link-kicker space-section-label">Geomagnetic</div>
-  <div class="geomag-card"><div class="kp-inline"><span class="kp-prefix">Kp</span><span class="kp-number" id="kpValue">—</span><span class="kp-status" id="kpLabel">LOADING</span></div><div class="kp-scale" id="kpScale"></div></div>
-  <div class="solar-grid"><div class="solar-cell"><div class="status-name">Solar Wind</div><div class="solar-val" id="solarWind">—</div><div class="status-desc" id="solarWindDesc">km/s</div></div><div class="solar-cell"><div class="status-name">IMF Bz</div><div class="solar-val" id="bz">—</div><div class="status-desc" id="bzDesc">nT</div></div><div class="solar-cell"><div class="status-name">Density</div><div class="solar-val" id="density">—</div><div class="status-desc">p/cm³</div></div><div class="solar-cell"><div class="status-name">Bt</div><div class="solar-val" id="bt">—</div><div class="status-desc">nT</div></div></div>
-  <div class="space-compact-card"><div class="link-kicker">Solar Flares (24h)</div><div id="flareList"><div class="event-meta">Loading NOAA / NASA feeds…</div></div></div>
-  <div class="space-compact-card sunspot-card"><div><div class="link-kicker">Sunspot Number</div><div class="sunspot-number" id="sunspotNumber">—</div></div><svg id="sunspotChart" class="sunspot-chart" viewBox="0 0 210 48"></svg></div>
-  <div class="space-compact-card radiation-card"><div><div class="link-kicker">Radiation Storm</div><div class="radiation-code" id="radiationScale">S0</div></div><div class="radiation-state" id="radiationDesc">None</div></div>
-  <details class="secondary-details space-advanced"><summary>Advanced space weather</summary>
-    <div class="section-title">GOES X-ray activity · 6 hours</div><div class="chart-wrap"><svg class="chart" id="xrayChart" viewBox="0 0 560 160"></svg></div>
-    <div class="section-title">NOAA space-weather scales</div><div id="noaaScales"></div>
-    <div class="source-note">Operational status comes from NOAA SWPC. NASA DONKI is supplemental context.</div>
-  </details>
-</section>
-<section class="page" data-page="calendar">
-  <div class="calendar-top"><div class="month-line"><span id="calendarMonth">—</span><span class="month-arrow">›</span></div><div class="calendar-week" id="calendarWeek"></div></div>
-  <div id="calendarEvents"><div class="event-meta">Calculating astronomical events…</div></div>
-  <div class="source-note">Sun, Moon, planet and eclipse calculations run locally with Astronomy Engine.</div>
-</section>
-</main>
+    <div class="topbar-actions">
+      <button class="icon-btn hidden" id="refreshBtn" aria-label="Refresh"><svg><use href="#i-refresh"/></svg></button>
+      <button class="icon-btn hidden" id="shareBtn" aria-label="Share"><svg><use href="#i-share"/></svg></button>
+      <button class="icon-btn" id="locationBtn" aria-label="Choose location"><svg><use href="#i-pin"/></svg></button>
+      <button class="icon-btn dots hidden" id="menuBtn" aria-label="More"><svg><use href="#i-dots"/></svg></button>
+    </div>
+  </header>
+
+  <div class="loader" id="loader"></div>
+  <div class="error-banner" id="errorBanner"></div>
+
+  <main>
+
+  <!-- ================= NOW ================= -->
+  <section class="page active" data-page="now">
+    <div class="hero">
+      <div class="hero-icon" id="heroIcon"></div>
+      <div class="hero-body">
+        <div class="hero-temp" id="nowTemp">—<span class="degree">°F</span></div>
+        <div class="hero-condition" id="nowCondition">Ready when you are</div>
+        <div class="hero-sub" id="feelsLike">Choose a location for live conditions.</div>
+      </div>
+    </div>
+
+    <div class="data-strip">
+      <div>
+        <div class="metric-value" id="humidity">—</div>
+        <div class="metric-label">Humidity</div>
+      </div>
+      <div>
+        <div class="metric-value" id="pressure">—</div>
+        <div class="metric-label">Pressure</div>
+      </div>
+      <div>
+        <div class="metric-value" id="wind">—</div>
+        <div class="metric-label" id="gust">Wind</div>
+      </div>
+    </div>
+
+    <div class="briefing">
+      <div class="briefing-lead" id="briefLead">SKYLAB translates the forecast.</div>
+      <div class="briefing-sub" id="briefSub">A short, readable briefing appears here.</div>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-cell">
+        <div class="status-ico" style="color:var(--green)"><svg><use href="#i-leaf"/></svg></div>
+        <div class="status-name">Air Quality</div>
+        <div class="status-value" id="aqi">—</div>
+        <div class="status-desc" id="aqiText">—</div>
+      </div>
+      <div class="status-cell">
+        <div class="status-ico" style="color:var(--orange)"><svg><use href="#i-sun-fill"/></svg></div>
+        <div class="status-name">UV Index</div>
+        <div class="status-value" id="uv">—</div>
+        <div class="status-desc" id="uvText">—</div>
+      </div>
+      <div class="status-cell">
+        <div class="status-ico" style="color:var(--blue-2)"><svg><use href="#i-gauge"/></svg></div>
+        <div class="status-name">Sky Score</div>
+        <div class="status-value" id="skyScore">—</div>
+        <div class="status-desc" id="skyScoreText">—</div>
+      </div>
+      <div class="status-cell">
+        <div class="status-ico" style="color:var(--blue-2)"><svg><use href="#i-eye"/></svg></div>
+        <div class="status-name">Visibility</div>
+        <div class="status-value" id="visibility">—</div>
+        <div class="status-desc" id="visDesc">—</div>
+      </div>
+    </div>
+
+    <div class="home-alert hidden" id="homeAlert">
+      <div class="home-alert-count" id="alertCount">0</div>
+      <div>
+        <div class="home-alert-title" id="alertTitle">Weather alert</div>
+        <div class="home-alert-text" id="alertText">No active NWS alerts</div>
+      </div>
+    </div>
+
+    <button class="feature-card" data-go="tonight">
+      <span class="feature-art" style="background-image:url('assets/panel-tonight.png')"></span>
+      <span class="feature-copy">
+        <span class="feature-kicker">Tonight</span>
+        <span class="feature-main" id="tonightTeaser">We’ll find the best sky window.</span>
+      </span>
+      <span class="chev">›</span>
+    </button>
+
+    <button class="feature-card" data-go="space">
+      <span class="feature-art" style="background-image:url('assets/card-space.png')"></span>
+      <span class="feature-copy">
+        <span class="feature-kicker">Space Weather</span>
+        <span class="feature-main" id="spaceTeaser">Loading solar conditions…</span>
+      </span>
+      <span class="feature-badge" id="spaceBadge"><svg><use href="#i-check"/></svg></span>
+      <span class="chev">›</span>
+    </button>
+
+    <button class="feature-card" data-go="calendar">
+      <span class="feature-art obj" id="nextEventArt" style="background-image:url('assets/saturn-obj.png')"></span>
+      <span class="feature-copy">
+        <span class="feature-kicker">Next Notable Event</span>
+        <span class="feature-main" id="nextEventTeaser">Calculating the sky…</span>
+      </span>
+      <span class="chev">›</span>
+    </button>
+  </section>
+
+  <!-- ================= TONIGHT ================= -->
+  <section class="page" data-page="tonight">
+    <div class="eyebrow" id="tonightDate">Tonight</div>
+
+    <div class="verdict-card">
+      <div class="verdict-head">Worth going outside?</div>
+      <div class="verdict" id="worthOutside">CALCULATING</div>
+      <div class="verdict-lead" id="tonightSummary">Combining clouds, precipitation, visibility, darkness and moonlight.</div>
+      <div class="score-row">
+        <div class="score-cell">
+          <div class="score-label">Sky Score</div><div class="score-val" id="tSky">—</div>
+          <div class="score-note" id="tSkyNote">—</div><div class="mini-track"><div class="mini-fill" id="tSkyBar"></div></div>
+        </div>
+        <div class="score-cell">
+          <div class="score-label">Clouds</div><div class="score-val" id="tCloud">—</div>
+          <div class="score-note" id="tCloudNote">—</div><div class="mini-track"><div class="mini-fill" id="tCloudBar"></div></div>
+        </div>
+        <div class="score-cell">
+          <div class="score-label">Seeing</div><div class="score-val" id="tMoon">—</div>
+          <div class="score-note" id="tMoonNote">—</div><div class="mini-track"><div class="mini-fill" id="tMoonBar"></div></div>
+        </div>
+        <div class="score-cell">
+          <div class="score-label">Transparency</div><div class="score-val" id="tVis">—</div>
+          <div class="score-note" id="tVisNote">—</div><div class="mini-track"><div class="mini-fill" id="tVisBar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="window-card">
+      <div class="kicker">Best Window</div>
+      <div class="window-time" id="bestWindow">—</div>
+      <div class="quality-bars" id="qualityBars"></div>
+      <div class="axis-row" id="windowAxis">
+        <span>8 PM</span><span>10 PM</span><span>12 AM</span><span>2 AM</span><span>4 AM</span>
+      </div>
+    </div>
+
+    <div class="section-title">Worth Seeing</div>
+    <div id="visibleEvents"></div>
+
+    <div class="section-title">Aurora</div>
+    <div class="aurora-meter">
+      <div class="event-body">
+        <div class="event-title" id="auroraTitle">Checking geomagnetic conditions</div>
+        <div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div>
+      </div>
+      <div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div>
+    </div>
+
+    <button class="link-tile" data-go="astronomy" style="margin-top:16px">
+      <span class="link-tile-ico violet"><svg><use href="#i-telescope"/></svg></span>
+      <span class="link-tile-body">
+        <span class="link-tile-title">Astronomy</span>
+        <span class="link-tile-sub">Moon, planets and everything worth seeing</span>
+      </span>
+      <span class="chev">›</span>
+    </button>
+
+    <details class="advanced">
+      <summary>Light &amp; photography</summary>
+      <div class="advanced-body" id="lightEvents"></div>
+    </details>
+
+    <div class="source-note">Sky score is a practical viewing estimate, not a professional seeing forecast.</div>
+  </section>
+
+  <!-- ================= WEATHER ================= -->
+  <section class="page" data-page="weather">
+    <div class="weather-hero">
+      <div class="hero-body">
+        <div class="hero-temp" id="wTemp">—<span class="degree">°F</span></div>
+        <div class="hero-condition" id="wCond">—</div>
+        <div class="hero-sub" id="wSub">Best-match forecast</div>
+      </div>
+      <div class="hero-photo" id="wPhoto" style="background-image:url('assets/moon-photo.png')"></div>
+    </div>
+
+    <div class="data-strip">
+      <div><div class="metric-value" id="wHigh">—</div><div class="metric-label" id="wLow">—</div></div>
+      <div><div class="metric-value" id="wHumidity">—</div><div class="metric-label">Humidity</div></div>
+      <div><div class="metric-value" id="wPressure">—</div><div class="metric-label">Pressure</div></div>
+    </div>
+
+    <div class="rain-card">
+      <svg class="mini-chart" id="precipChart" viewBox="0 0 360 86" preserveAspectRatio="none" aria-label="Rain chance over the next 24 hours"></svg>
+      <div class="rain-figure">
+        <div class="kicker">Rain Chances</div>
+        <div class="rain-big" id="rainChance">—</div>
+        <div class="rain-today">Today</div>
+      </div>
+      <div class="chart-axis" id="precipAxis"></div>
+    </div>
+
+    <div class="hourly-card">
+      <div class="kicker">Hourly Forecast</div>
+      <div class="hour-strip" id="hourStrip"></div>
+    </div>
+
+    <div class="card" style="padding:15px 0 5px">
+      <div class="kicker" style="padding:0 15px 4px">10-Day Forecast</div>
+      <div id="dailyForecast"></div>
+    </div>
+
+    <button class="link-tile" data-go="map">
+      <span class="link-tile-ico"><svg><use href="#i-radar"/></svg></span>
+      <span class="link-tile-body">
+        <span class="link-tile-title">Map</span>
+        <span class="link-tile-sub">Radar, clouds and air quality layers</span>
+      </span>
+      <span class="chev">›</span>
+    </button>
+
+    <button class="link-tile" data-go="models">
+      <span class="link-tile-ico violet"><svg><use href="#i-chart"/></svg></span>
+      <span class="link-tile-body">
+        <span class="link-tile-title">Model Comparison</span>
+        <span class="link-tile-sub">See how models compare and which we trust more</span>
+      </span>
+      <span class="pill">ADVANCED</span>
+    </button>
+
+    <details class="advanced">
+      <summary>Atmospheric detail</summary>
+      <div class="advanced-body">
+        <div class="chart-wrap"><svg class="chart" id="tempChart" viewBox="0 0 560 180"></svg></div>
+        <div class="status-grid" style="margin-bottom:11px">
+          <div class="status-cell"><div class="status-name">Dew point</div><div class="status-value" id="dDew">—</div></div>
+          <div class="status-cell"><div class="status-name">CAPE</div><div class="status-value" id="dCape">—</div><div class="status-desc" id="dCapeText">—</div></div>
+          <div class="status-cell"><div class="status-name">Cloud base</div><div class="status-value" id="dCloudBase">—</div></div>
+          <div class="status-cell"><div class="status-name">Freezing</div><div class="status-value" id="dFreeze">—</div></div>
+        </div>
+        <div class="kicker" style="margin-bottom:10px">Cloud layers</div>
+        <div id="cloudLayers"></div>
+        <div class="data-strip four" style="padding-bottom:0;margin-top:16px">
+          <div><div class="metric-value" id="dSolar">—</div><div class="metric-label">W/m²</div></div>
+          <div><div class="metric-value" id="dRain">—</div><div class="metric-label">in/hr</div></div>
+          <div><div class="metric-value" id="dGust">—</div><div class="metric-label">Gust</div></div>
+          <div><div class="metric-value" id="dUv">—</div><div class="metric-label">UV</div></div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= SPACE WEATHER ================= -->
+  <section class="page" data-page="space">
+    <div class="geomag-card">
+      <div class="kicker">Geomagnetic</div>
+      <div class="kp-inline">
+        <span class="kp-prefix">Kp</span>
+        <span class="kp-number" id="kpValue">—</span>
+        <span class="kp-status" id="kpLabel">Loading</span>
+      </div>
+      <div class="kp-scale" id="kpScale"></div>
+      <div class="kp-nums" id="kpNums"></div>
+    </div>
+
+    <div class="solar-grid">
+      <div class="solar-cell"><div class="solar-name">Solar Wind</div><div class="solar-val" id="solarWind">—</div><div class="solar-desc" id="solarWindDesc">Speed</div></div>
+      <div class="solar-cell"><div class="solar-name">IMF Bz</div><div class="solar-val" id="bz">—</div><div class="solar-desc" id="bzDesc">nT</div></div>
+      <div class="solar-cell"><div class="solar-name">Density</div><div class="solar-val" id="density">—</div></div>
+      <div class="solar-cell"><div class="solar-name">Bt</div><div class="solar-val" id="bt">—</div></div>
+    </div>
+
+    <div class="flare-card">
+      <div class="kicker">Solar Flares (24h)</div>
+      <div class="flare-grid" id="flareList"></div>
+      <button class="card-foot" id="flareAll">View all <span class="chev" style="font-size:15px">›</span></button>
+    </div>
+
+    <div class="split-card sunspot-card">
+      <div class="kicker">Sunspot Number</div>
+      <div class="sunspot-number" id="sunspotNumber">—</div>
+      <svg class="sunspot-chart" id="sunspotChart" viewBox="0 0 360 52" preserveAspectRatio="none"></svg>
+    </div>
+
+    <button class="split-card" data-open="scalesModal">
+      <div><div class="kicker">Radiation Storm</div><div class="radiation-code" id="radiationScale">S0</div></div>
+      <div class="radiation-state none" id="radiationDesc">None <span class="chev">›</span></div>
+    </button>
+
+    <button class="link-tile" data-go="astronomy">
+      <span class="link-tile-ico violet"><svg><use href="#i-telescope"/></svg></span>
+      <span class="link-tile-body">
+        <span class="link-tile-title">Astronomy</span>
+        <span class="link-tile-sub">Everything worth seeing in the sky</span>
+      </span>
+      <span class="chev">›</span>
+    </button>
+
+    <details class="advanced">
+      <summary>GOES X-ray activity</summary>
+      <div class="advanced-body">
+        <div class="chart-wrap"><svg class="chart" id="xrayChart" viewBox="0 0 560 160"></svg></div>
+        <div class="kicker" style="margin:6px 0 6px">NOAA space-weather scales</div>
+        <div id="noaaScales"></div>
+      </div>
+    </details>
+
+    <div class="source-note">Operational status comes from NOAA SWPC. NASA DONKI provides supplemental flare and CME context.</div>
+  </section>
+
+  <!-- ================= ASTRONOMY ================= -->
+  <section class="page" data-page="astronomy">
+    <div class="moon-card">
+      <div class="moon-top">
+        <div>
+          <div class="kicker">Moon</div>
+          <div class="moon-pct" id="moonPct">—<span class="unit">%</span></div>
+          <div class="moon-phase-name" id="moonPhase">Calculating phase</div>
+        </div>
+        <div class="moon-photo" id="moonPhoto" style="background-image:url('assets/moon-photo.png')"></div>
+      </div>
+      <div class="moon-row">
+        <div class="moon-slot"><b>Rise</b><span id="moonRise">—</span></div>
+        <div class="moon-slot"><b>Set</b><span id="moonSet">—</span></div>
+      </div>
+    </div>
+
+    <div class="section-title ruled">Planets Tonight</div>
+    <div id="planetList"></div>
+
+    <div class="section-title ruled">Other Highlights</div>
+    <div id="astroHighlights"></div>
+
+    <div class="source-note">Sun, Moon, planet, eclipse and twilight positions are calculated on-device with Astronomy Engine — no network required.</div>
+  </section>
+
+  <!-- ================= MAP ================= -->
+  <section class="page map-page" data-page="map">
+    <div class="map-shell">
+      <div id="radarMap"></div>
+      <div class="map-layers">
+        <button class="layer-btn on" data-layer="radar" aria-label="Radar layer"><svg><use href="#i-radar"/></svg></button>
+        <button class="layer-btn" data-layer="clouds" aria-label="Cloud layer"><svg><use href="#i-cloud"/></svg></button>
+        <button class="layer-btn" data-layer="base" aria-label="Base map style"><svg><use href="#i-globe"/></svg></button>
+      </div>
+      <div class="map-legend">
+        <div class="legend-bar"></div>
+        <div class="legend-labels"><span>Light</span><span>Heavy</span></div>
+      </div>
+    </div>
+
+    <div class="map-timeline">
+      <button class="play-btn" id="radarPlay" aria-label="Play radar loop"><svg><use href="#i-play"/></svg></button>
+      <div class="timeline-time" id="radarTime">—</div>
+      <div class="timeline-track"><input type="range" id="radarRange" min="0" max="0" value="0" step="1" aria-label="Radar time"></div>
+      <div class="timeline-now">Now</div>
+    </div>
+
+    <div class="source-note" id="radarNote">Radar tiles © RainViewer, for personal and educational use. Base map © OpenStreetMap contributors.</div>
+  </section>
+
+  <!-- ================= MODEL COMPARISON ================= -->
+  <section class="page" data-page="models">
+    <div class="eyebrow" id="modelTime">Loading model guidance…</div>
+
+    <div class="segmented" id="modelTabs">
+      <button class="segment active" data-model-tab="temperature">Temperature</button>
+      <button class="segment" data-model-tab="precipitation">Precipitation</button>
+      <button class="segment" data-model-tab="wind">Wind</button>
+      <button class="segment" data-model-tab="snow">Snow</button>
+    </div>
+
+    <div class="kicker" id="modelMetricLabel" style="margin-bottom:15px">Temperature</div>
+    <div id="modelRows"></div>
+
+    <div class="consensus-block">
+      <div class="kicker">Consensus</div>
+      <div class="consensus-value" id="modelConsensus">—</div>
+      <div class="consensus-note" id="modelConsensusDesc">Our Best Estimate</div>
+    </div>
+
+    <div class="agreement-card">
+      <div>
+        <div class="agreement-label">Model Agreement</div>
+        <div class="agreement-word" id="agreementText">—</div>
+      </div>
+      <div class="agreement-ring" id="agreementRing"><span id="agreementPct">—</span></div>
+    </div>
+
+    <div class="source-note">Models update at different times. The main SKYLAB forecast uses Open-Meteo’s best-match blend; this view exposes disagreement rather than pretending one model is universally best.</div>
+  </section>
+
+  <!-- ================= CALENDAR ================= -->
+  <section class="page" data-page="calendar">
+    <div class="calendar-week" id="calendarWeek"></div>
+    <div id="calendarEvents"></div>
+    <div class="source-note">Sun, Moon, planet and eclipse calculations run locally with Astronomy Engine. Meteor-shower dates are typical annual peak windows and can vary by a day or two.</div>
+  </section>
+
+  </main>
 </div>
+
 <nav class="nav" aria-label="Primary">
-  <button class="nav-btn active" data-nav="now"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg><span>Now</span></button>
-  <button class="nav-btn" data-nav="tonight"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4a8.5 8.5 0 1 0 11.5 11.5Z"/></svg><span>Tonight</span></button>
-  <button class="nav-btn" data-nav="weather"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 8.1 5 5 0 0 0 7 18Z"/></svg><span>Weather</span></button>
-  <button class="nav-btn" data-nav="space"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13c3.5-1.5 6.5-4.5 8-9 1.5 4.5 4.5 7.5 8 9-3.5 1.5-6.5 4.5-8 9-1.5-4.5-4.5-7.5-8-9Z"/><path d="M17.5 3.5v3M16 5h3"/></svg><span>Space</span></button>
-  <button class="nav-btn" data-nav="calendar"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M7 3v4M17 3v4M3.5 9.5h17"/></svg><span>Calendar</span></button>
+  <div class="nav-inner">
+    <button class="nav-btn active" data-nav="now"><svg class="nav-icon"><use href="#i-nav-now"/></svg><span>Now</span></button>
+    <button class="nav-btn" data-nav="tonight"><svg class="nav-icon"><use href="#i-nav-tonight"/></svg><span>Tonight</span></button>
+    <button class="nav-btn" data-nav="weather"><svg class="nav-icon"><use href="#i-cloud"/></svg><span>Weather</span></button>
+    <button class="nav-btn" data-nav="space"><svg class="nav-icon"><use href="#i-nav-space"/></svg><span>Space</span></button>
+    <button class="nav-btn" data-nav="calendar"><svg class="nav-icon"><use href="#i-nav-cal"/></svg><span>Calendar</span></button>
+  </div>
 </nav>
-<div class="modal" id="locationModal"><div class="sheet"><div class="sheet-head"><div class="sheet-title">Location</div><button class="icon-btn close" data-close="locationModal">×</button></div><button class="primary" id="useLocation">Use my current location</button><div class="section-title">Presets</div><button class="preset" data-lat="41.4473" data-lon="-71.5249" data-name="South Kingstown, RI"><span>South Kingstown<small>Rhode Island</small></span><span>›</span></button><button class="preset" data-lat="42.3601" data-lon="-71.0589" data-name="Boston, MA"><span>Boston<small>Massachusetts</small></span><span>›</span></button><button class="preset" data-lat="40.7128" data-lon="-74.0060" data-name="New York, NY"><span>New York<small>New York</small></span><span>›</span></button><div class="source-note">Your coordinates stay on this device except when sent to the data providers required to return local conditions.</div></div></div>
-<div class="modal" id="modelModal"><div class="sheet"><div class="sheet-head"><div><div class="sheet-title">Model comparison</div><div class="event-meta" id="modelTime">Next 24 hours</div></div><button class="icon-btn close" data-close="modelModal">×</button></div><div id="modelRows"><div class="event-meta">Loading models…</div></div><div class="consensus"><div class="link-kicker">Consensus</div><div class="headline" id="modelConsensus">—</div><div class="lead" id="modelConsensusDesc">Comparing available forecasts.</div><div class="model-agreement"><div><div class="link-kicker">Model agreement</div><div class="event-title" id="agreementText">—</div></div><div class="agreement-ring" id="agreementRing">—</div></div></div><div class="source-note">The main forecast uses Open-Meteo’s best-match blend. This view exposes disagreement instead of pretending one model is universally best.</div></div></div>
+
+<div class="modal" id="locationModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">Location</div>
+      <button class="icon-btn close" data-close="locationModal" aria-label="Close">×</button>
+    </div>
+    <button class="primary" id="useLocation">Use my current location</button>
+    <div class="section-title">Presets</div>
+    <button class="preset" data-lat="41.4473" data-lon="-71.5249" data-name="South Kingstown, RI"><span>South Kingstown<small>Rhode Island</small></span><span>›</span></button>
+    <button class="preset" data-lat="42.3601" data-lon="-71.0589" data-name="Boston, MA"><span>Boston<small>Massachusetts</small></span><span>›</span></button>
+    <button class="preset" data-lat="40.7128" data-lon="-74.0060" data-name="New York, NY"><span>New York<small>New York</small></span><span>›</span></button>
+    <div class="source-note">Your coordinates stay on this device except when sent to the data providers required to return local conditions.</div>
+  </div>
+</div>
+
+<div class="modal" id="scalesModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><div class="sheet-title">NOAA scales</div><div class="event-meta">Current operational status</div></div>
+      <button class="icon-btn close" data-close="scalesModal" aria-label="Close">×</button>
+    </div>
+    <div id="scalesModalBody"></div>
+    <div class="source-note">R = radio blackout · S = radiation storm · G = geomagnetic storm. Source: NOAA Space Weather Prediction Center.</div>
+  </div>
+</div>
+
+<div class="modal" id="flareModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><div class="sheet-title">Solar activity</div><div class="event-meta">Recent flares and CMEs</div></div>
+      <button class="icon-btn close" data-close="flareModal" aria-label="Close">×</button>
+    </div>
+    <div id="flareModalBody"></div>
+    <div class="source-note">Flare classes come from NOAA GOES X-ray flux. Event listings are supplemented by NASA DONKI.</div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="app.js"></script>

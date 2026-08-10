@@ -1,5 +1,42 @@
-const CACHE='skylab-shell-v5-preview-reconstruction';
-const SHELL=['./','./index.html','./app.css','./app.js','./manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./assets/iss-hi.png','./assets/meteor-hi.png','./assets/moon-hi.png','./assets/saturn-art-hi.png','./assets/aurora-art-hi.png','./assets/mw-art-hi.png','./assets/art-milkyway.svg','./assets/art-aurora.svg','./assets/art-saturn.svg','./assets/art-meteor.svg','./assets/art-iss.svg','./assets/moon-texture.svg','./assets/preview-tonight-card.png','./assets/preview-space-card.png','./assets/preview-event-card.png','./assets/preview-weather-moon.png','./assets/preview-astro-moon.png','./assets/preview-astro-meteor.png','./assets/preview-astro-iss.png'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin===location.origin){e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))))}});
+const CACHE = 'skylab-shell-v7-preview';
+
+const SHELL = [
+  './', './index.html', './app.css', './app.js', './manifest.webmanifest',
+  './assets/icon-192.png', './assets/icon-512.png',
+  /* card panel art */
+  './assets/card-tonight.png', './assets/card-space.png', './assets/card-event.png',
+  './assets/panel-tonight.png', './assets/panel-space.png',
+  /* floating objects */
+  './assets/saturn-obj.png', './assets/moon-obj.png', './assets/meteor-obj.png',
+  './assets/iss-obj.png', './assets/sky-obj.png',
+  /* photography */
+  './assets/moon-photo.png', './assets/saturn-photo.png',
+  './assets/crescent.png', './assets/mark.png', './assets/earth-horizon.png'
+];
+
+self.addEventListener('install', e => e.waitUntil(
+  caches.open(CACHE)
+    .then(c => Promise.allSettled(SHELL.map(u => c.add(u))))
+    .then(() => self.skipWaiting())
+));
+
+self.addEventListener('activate', e => e.waitUntil(
+  caches.keys()
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim())
+));
+
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  const u = new URL(e.request.url);
+  if (u.origin !== location.origin) return;          // never cache live API traffic
+  e.respondWith(
+    fetch(e.request)
+      .then(r => {
+        const copy = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return r;
+      })
+      .catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
+  );
+});
