@@ -1,7 +1,7 @@
-const CACHE = 'skylab-shell-v12';
+const CACHE = 'skylab-shell-v13';
 
 const SHELL = [
-  './', './index.html', './app.css?v=12', './app.js?v=12', './manifest.webmanifest',
+  './', './index.html', './app.css?v=13', './app.js?v=12', './manifest.webmanifest',
   './assets/card-space.jpg',
   './assets/icon-192.png',
   './assets/icon-512.png',
