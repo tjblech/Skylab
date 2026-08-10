@@ -1,0 +1,16 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
+  <defs>
+    <radialGradient id='moon' cx='38%' cy='30%'>
+      <stop offset='0' stop-color='#d4d2cb'/>
+      <stop offset='.55' stop-color='#8e8f8c'/>
+      <stop offset='1' stop-color='#3c434a'/>
+    </radialGradient>
+  </defs>
+  <circle cx='100' cy='100' r='92' fill='url(#moon)'/>
+  <g fill='#76808b' opacity='.44'>
+    <circle cx='66' cy='62' r='14'/><circle cx='112' cy='74' r='18'/><circle cx='88' cy='110' r='12'/><circle cx='132' cy='118' r='16'/><circle cx='61' cy='132' r='20'/><circle cx='145' cy='53' r='9'/><circle cx='96' cy='42' r='7'/>
+  </g>
+  <g fill='#b7bab8' opacity='.25'>
+    <circle cx='66' cy='62' r='8'/><circle cx='112' cy='74' r='10'/><circle cx='88' cy='110' r='6'/><circle cx='132' cy='118' r='9'/><circle cx='61' cy='132' r='12'/>
+  </g>
+</svg>
