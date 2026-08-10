@@ -11,7 +11,7 @@
 <meta name="description" content="Live conditions. Above and around you. Weather, space weather, astronomy and air quality in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="app.css?v=8">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <title>SKYLAB — Live Earth &amp; Sky</title>
 </head>
@@ -173,7 +173,7 @@
     </div>
 
     <button class="feature-card" data-go="tonight">
-      <span class="feature-art" style="background-image:url('assets/panel-tonight.png')"></span>
+      <span class="feature-art" style="background-image:url('assets/panel-tonight.jpg')"></span>
       <span class="feature-copy">
         <span class="feature-kicker">Tonight</span>
         <span class="feature-main" id="tonightTeaser">We’ll find the best sky window.</span>
@@ -182,7 +182,7 @@
     </button>
 
     <button class="feature-card" data-go="space">
-      <span class="feature-art" style="background-image:url('assets/card-space.png')"></span>
+      <span class="feature-art" style="background-image:url('assets/card-space.jpg')"></span>
       <span class="feature-copy">
         <span class="feature-kicker">Space Weather</span>
         <span class="feature-main" id="spaceTeaser">Loading solar conditions…</span>
@@ -275,7 +275,7 @@
         <div class="hero-condition" id="wCond">—</div>
         <div class="hero-sub" id="wSub">Best-match forecast</div>
       </div>
-      <div class="hero-photo" id="wPhoto" style="background-image:url('assets/moon-photo.png')"></div>
+      <div class="hero-photo" id="wPhoto" style="background-image:url('assets/moon-photo.jpg')"></div>
     </div>
 
     <div class="data-strip">
@@ -411,7 +411,7 @@
           <div class="moon-pct" id="moonPct">—<span class="unit">%</span></div>
           <div class="moon-phase-name" id="moonPhase">Calculating phase</div>
         </div>
-        <div class="moon-photo" id="moonPhoto" style="background-image:url('assets/moon-photo.png')"></div>
+        <div class="moon-photo" id="moonPhoto" style="background-image:url('assets/moon-photo.jpg')"></div>
       </div>
       <div class="moon-row">
         <div class="moon-slot"><b>Rise</b><span id="moonRise">—</span></div>
@@ -543,6 +543,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="app.js"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

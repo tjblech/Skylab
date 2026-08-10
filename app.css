@@ -51,7 +51,7 @@ body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Segoe UI",Roboto,sans-serif;
   font-size:15px;line-height:1.4;
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-synthesis-weight:none;
   min-height:100svh;overscroll-behavior-y:none;
 }
 
@@ -92,7 +92,7 @@ svg{display:block}
   -webkit-backdrop-filter:blur(20px) saturate(140%);
 }
 .topbar-left{display:flex;align-items:center;gap:8px;min-width:0}
-.screen-title{font-size:25px;font-weight:700;letter-spacing:-.5px;line-height:1.1;color:var(--text)}
+.screen-title{font-size:25px;font-weight:600;letter-spacing:-.5px;line-height:1.1;color:var(--text)}
 .screen-subtitle{
   font-size:14.5px;color:var(--muted);letter-spacing:-.15px;margin-top:3px;line-height:1.2;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -131,7 +131,7 @@ svg{display:block}
    ============================================================ */
 
 .kicker{font-size:15px;font-weight:400;letter-spacing:-.2px;color:var(--text-2)}
-.section-title{font-size:18px;font-weight:600;letter-spacing:-.35px;color:var(--text);margin:22px 0 12px}
+.section-title{font-size:18px;font-weight:550;letter-spacing:-.35px;color:var(--text);margin:22px 0 12px}
 .section-title.ruled{border-top:1px solid var(--line-soft);padding-top:20px}
 .source-note{font-size:12px;color:var(--faint);line-height:1.55;margin:18px 2px 4px}
 
@@ -167,7 +167,7 @@ svg{display:block}
 .data-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 2px 24px}
 .data-strip.four{grid-template-columns:repeat(4,1fr)}
 .metric-value{
-  font-size:19px;font-weight:600;letter-spacing:-.4px;color:var(--text);
+  font-size:19px;font-weight:550;letter-spacing:-.4px;color:var(--text);
   display:flex;align-items:baseline;gap:4px;white-space:nowrap;
 }
 .metric-value .unit{font-size:15px;font-weight:400;color:var(--muted);letter-spacing:-.2px}
@@ -179,7 +179,7 @@ svg{display:block}
 /* ---- briefing ---- */
 .briefing{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
   padding:14px 16px;margin-bottom:13px}
-.briefing-lead{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.2px}
+.briefing-lead{font-size:15px;font-weight:550;color:var(--text);letter-spacing:-.2px}
 .briefing-sub{font-size:14px;color:var(--body);margin-top:3px;letter-spacing:-.15px}
 
 /* ---- 4-up status grid ---- */
@@ -230,7 +230,7 @@ svg{display:block}
 }
 
 .feature-copy{display:block;position:relative;z-index:2;padding:17px 0 0 17px;max-width:64%}
-.feature-kicker{display:block;font-size:16px;font-weight:600;letter-spacing:-.3px;color:var(--text)}
+.feature-kicker{display:block;font-size:16px;font-weight:550;letter-spacing:-.3px;color:var(--text)}
 .feature-main{display:block;font-size:14px;color:var(--body);margin-top:5px;letter-spacing:-.15px;line-height:1.32}
 
 .feature-badge{
@@ -252,7 +252,7 @@ svg{display:block}
 .verdict-card{background:var(--card);border:1px solid var(--line-soft);
   border-radius:var(--radius);padding:17px 17px 8px;margin-bottom:13px}
 .verdict-head{font-size:11.5px;font-weight:650;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
-.verdict{font-size:42px;font-weight:700;letter-spacing:-1.6px;line-height:1.08;margin-top:7px;color:var(--green)}
+.verdict{font-size:42px;font-weight:600;letter-spacing:-1.6px;line-height:1.08;margin-top:7px;color:var(--green)}
 .verdict-lead{font-size:14px;color:var(--body);line-height:1.5;margin-top:9px;letter-spacing:-.15px}
 
 .score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px;padding-bottom:11px}
@@ -586,7 +586,7 @@ svg{display:block}
   max-height:88svh;overflow-y:auto;animation:sheetUp .26s cubic-bezier(.2,.8,.3,1)}
 @keyframes sheetUp{from{transform:translateY(18px);opacity:.4}to{transform:none;opacity:1}}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-.sheet-title{font-size:20px;font-weight:650;letter-spacing:-.4px}
+.sheet-title{font-size:20px;font-weight:600;letter-spacing:-.4px}
 .close{font-size:24px;line-height:1;color:var(--muted)}
 
 .primary{width:100%;padding:14px;border-radius:var(--radius-sm);

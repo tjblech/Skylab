@@ -411,9 +411,10 @@ function tonightSeries() {
 }
 
 function bestWindow(bars, times) {
-  if (!bars.length) return null;
+  if (bars.length < 3) return null;
   const peak = Math.max(...bars);
-  const thresh = Math.max(peak - 6, peak * .9);
+  const thresh = peak - 2;
+
   let bestStart = 0, bestLen = 0, i = 0;
   while (i < bars.length) {
     if (bars[i] >= thresh) {
@@ -424,9 +425,25 @@ function bestWindow(bars, times) {
     } else i++;
   }
   if (!bestLen) return null;
+
+  /* On a flawless night the whole span qualifies. Narrow it to the best
+     ~2h40m sub-window so the answer stays actionable. */
+  const MAX = 8;                                   // 8 × 20 min
+  if (bestLen > MAX) {
+    let bi = bestStart, bs = -Infinity;
+    for (let k = bestStart; k <= bestStart + bestLen - MAX; k++) {
+      const mean = bars.slice(k, k + MAX).reduce((a, b) => a + b, 0) / MAX;
+      const centred = 1 - Math.abs((k + MAX / 2) - bars.length / 2) / bars.length;
+      const score = mean + centred * 4;            // prefer the middle of the night
+      if (score > bs) { bs = score; bi = k; }
+    }
+    bestStart = bi;
+    bestLen = MAX;
+  }
+
   const start = times[bestStart];
   const end = new Date(times[Math.min(bestStart + bestLen, times.length - 1)].getTime() + 10 * 60000);
-  return { start, end, peak, thresh };
+  return { start, end, peak, thresh, from: bestStart, to: bestStart + bestLen };
 }
 
 function buildBrief() {
@@ -601,13 +618,26 @@ function renderTonight() {
   set('tVis',   `${trans}<span class="of">/10</span>`, trans >= 8 ? 'Excellent' : trans >= 6 ? 'Good' : trans >= 4 ? 'Fair' : 'Poor', trans * 10, tone(trans));
 
   $('bestWindow').textContent = win ? `${timeFmt(win.start)} – ${timeFmt(win.end)}` : 'No clear window tonight';
+  /* Bars fade from full green at the peak of the best window out to the
+     neutral track colour at the edges of the night. */
   const lo = Math.min(...bars), hi = Math.max(...bars);
   const span = Math.max(hi - lo, 18);              // keep some relief on uniform nights
+  const hasRange = win && Number.isFinite(win.from) && Number.isFinite(win.to);
+  const centre = hasRange ? (win.from + win.to - 1) / 2 : (bars.length - 1) / 2;
+  const reach = hasRange ? Math.max((win.to - win.from) / 2, 2) : bars.length / 4;
+
   $('qualityBars').innerHTML = bars.map((v, idx) => {
-    const inWindow = win && idx >= win.from && idx < win.to;
-    const cls = inWindow ? 'best' : v >= lo + span * .5 ? 'ok' : '';
-    const h = 10 + ((v - (hi - span)) / span) * 34;
-    return `<div class="quality-bar ${cls}" style="height:${clamp(h, 8, 46)}px"></div>`;
+    /* proximity to the peak: 1 at the centre of the window, easing to 0 */
+    const d = Math.abs(idx - centre) / (reach * 2.6);
+    const near = clamp(1 - d, 0, 1);
+    const quality = clamp((v - (hi - span)) / span, 0, 1);
+    const heat = clamp(near * .75 + quality * .25, 0, 1);
+    const eased = heat * heat * (3 - 2 * heat);    // smoothstep
+
+    const alpha = (Number.isFinite(eased) ? .10 + eased * .90 : .55).toFixed(3);
+    const h = 10 + quality * 34;
+    return `<div class="quality-bar" style="height:${clamp(h, 8, 46)}px;` +
+           `background:rgba(95,215,155,${alpha})"></div>`;
   }).join('');
 
   renderVisible();
@@ -628,9 +658,9 @@ const ART = {
   mercury:'assets/saturn-obj.png',
   meteor: 'assets/meteor-obj.png',
   iss:    'assets/iss-obj.png',
-  aurora: 'assets/card-space.png',
-  sky:    'assets/sky-obj.png',
-  sun:    'assets/card-space.png',
+  aurora: 'assets/card-space.jpg',
+  sky:    'assets/sky-obj.jpg',
+  sun:    'assets/card-space.jpg',
   eclipse:'assets/moon-obj.png'
 };
 
@@ -850,7 +880,7 @@ function renderWeather() {
     wPhoto.style.backgroundImage = 'radial-gradient(circle at 38% 32%,#ffeaa6,#f2b845 44%,#c8831d 76%,#734911 100%)';
     wPhoto.style.boxShadow = '0 0 30px rgba(242,184,69,.20)';
   } else {
-    wPhoto.style.backgroundImage = "url('assets/moon-photo.png')";
+    wPhoto.style.backgroundImage = "url('assets/moon-photo.jpg')";
     wPhoto.style.boxShadow = 'none';
   }
 

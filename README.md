@@ -8,6 +8,31 @@ artwork are matched to it — while every number on screen comes from a live sou
 
 ---
 
+## Two builds
+
+**`skylab-standalone.html`** — one self-contained file, ~580 KB. CSS, JavaScript and every
+image are inlined, so there is **no assets folder to move around**. Double-click it, or drop
+it on any host. Trade-off: no service worker or PWA install (a single file has no sibling
+manifest), and the browser re-reads the whole file on each load instead of caching images
+separately.
+
+**`index.html` + `assets/`** — the normal build. Installs as a PWA, works offline, caches
+properly. This one *does* need `assets/`, but only these ten files:
+
+```
+card-space.jpg     moon-obj.png      panel-tonight.jpg
+icon-192.png       moon-photo.jpg    saturn-obj.png
+icon-512.png       meteor-obj.png    sky-obj.jpg
+iss-obj.png
+```
+
+Everything else in `assets/` is left over from the first build and can be deleted — 33 files,
+about 950 KB, referenced by nothing.
+
+Regenerate the standalone after any edit with `python3 build-standalone.py`.
+
+---
+
 ## Run it
 
 **Local server** (recommended — geolocation, service worker and PWA install all work):
@@ -98,20 +123,19 @@ Feed parsing is defensive: SWPC serves some endpoints as `[header, ...rows]` and
 ## Files
 
 ```
-index.html   markup for all 8 screens + inline SVG icon sprite
-app.css      design system: tokens, components, screens (no framework)
-app.js       state, data loading, derived metrics, renderers, navigation
-sw.js        offline shell; never caches live API traffic
-_frame.html  dev harness — renders the app in a 393px iframe for screenshots
-             (open _frame.html?p=tonight). Safe to delete before shipping.
-assets/      artwork
+index.html              markup for all 8 screens + inline SVG icon sprite
+app.css                 design system: tokens, components, screens (no framework)
+app.js                  state, data loading, derived metrics, renderers, navigation
+sw.js                   offline shell; never caches live API traffic
+skylab-standalone.html  generated single-file build
+build-standalone.py     regenerates the above
+_frame.html             dev harness — renders the app in a 393px iframe for
+                        screenshots (open _frame.html?p=tonight). Safe to delete.
+assets/                 artwork (10 live files, see above)
 ```
 
-Current artwork: `card-tonight`, `card-space`, `card-event`, `panel-tonight`,
-`panel-space`, `saturn-obj`, `moon-obj`, `meteor-obj`, `iss-obj`, `sky-obj`,
-`moon-photo`, `saturn-photo`, `crescent`, `mark`, `earth-horizon`, `icon-192`, `icon-512`.
-Older `*-hi.png` / `art-*.svg` / `preview-*.png` files from the first build are unused and
-can be deleted.
+Artwork is sized to 2× its on-screen size: opaque panels and photos are JPEG, anything
+needing transparency stays PNG. Total 113 KB, down from 384 KB.
 
 ---
 

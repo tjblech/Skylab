@@ -1,17 +1,17 @@
-const CACHE = 'skylab-shell-v7-preview';
+const CACHE = 'skylab-shell-v8';
 
 const SHELL = [
-  './', './index.html', './app.css', './app.js', './manifest.webmanifest',
-  './assets/icon-192.png', './assets/icon-512.png',
-  /* card panel art */
-  './assets/card-tonight.png', './assets/card-space.png', './assets/card-event.png',
-  './assets/panel-tonight.png', './assets/panel-space.png',
-  /* floating objects */
-  './assets/saturn-obj.png', './assets/moon-obj.png', './assets/meteor-obj.png',
-  './assets/iss-obj.png', './assets/sky-obj.png',
-  /* photography */
-  './assets/moon-photo.png', './assets/saturn-photo.png',
-  './assets/crescent.png', './assets/mark.png', './assets/earth-horizon.png'
+  './', './index.html', './app.css?v=8', './app.js?v=8', './manifest.webmanifest',
+  './assets/card-space.jpg',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/iss-obj.png',
+  './assets/meteor-obj.png',
+  './assets/moon-obj.png',
+  './assets/moon-photo.jpg',
+  './assets/panel-tonight.jpg',
+  './assets/saturn-obj.png',
+  './assets/sky-obj.jpg'
 ];
 
 self.addEventListener('install', e => e.waitUntil(
