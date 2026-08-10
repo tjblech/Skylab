@@ -1,0 +1,17 @@
+{
+  "name": "SKYLAB — Live Earth & Sky",
+  "short_name": "SKYLAB",
+  "description": "Live conditions. Above and around you. Weather, space weather, astronomy and air quality in one place.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#04070c",
+  "theme_color": "#04070c",
+  "orientation": "portrait-primary",
+  "categories": ["weather", "utilities", "education"],
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

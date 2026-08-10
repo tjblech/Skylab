@@ -6,12 +6,12 @@
 
 :root{
   /* surfaces */
-  --bg:#050a11;
-  --bg-2:#070d15;
-  --card:#0b1219;
-  --card-2:#0f1720;
-  --line:rgba(255,255,255,.065);
-  --line-soft:rgba(255,255,255,.05);
+  --bg:#03070c;
+  --bg-2:#04090f;
+  --card:#081018;
+  --card-2:#0c141d;
+  --line:rgba(255,255,255,.06);
+  --line-soft:rgba(255,255,255,.045);
 
   /* type */
   --text:#f3f6f9;
@@ -58,9 +58,9 @@ body{
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(700px 380px at 80% -170px,rgba(38,86,120,.20),transparent 64%),
-    radial-gradient(460px 260px at 4% -110px,rgba(28,60,92,.12),transparent 66%),
-    linear-gradient(180deg,#08111b 0%,#060c14 40%,#04080e 100%);
+    radial-gradient(700px 380px at 80% -170px,rgba(32,74,106,.15),transparent 64%),
+    radial-gradient(460px 260px at 4% -110px,rgba(24,52,82,.09),transparent 66%),
+    linear-gradient(180deg,#050b12 0%,#04080e 40%,#02050a 100%);
 }
 
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -177,15 +177,17 @@ svg{display:block}
 .arrow.up{color:var(--text-2)}
 
 /* ---- briefing ---- */
-.briefing{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
-  padding:14px 16px;margin-bottom:13px}
+.briefing{background:rgba(12,18,26,.96);border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+  border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;
+  padding:14px 16px 13px;margin-bottom:0}
 .briefing-lead{font-size:15px;font-weight:550;color:var(--text);letter-spacing:-.2px}
 .briefing-sub{font-size:14px;color:var(--body);margin-top:3px;letter-spacing:-.15px}
 
 /* ---- 4-up status grid ---- */
 .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-  background:var(--card);border:1px solid var(--line-soft);
-  border-radius:var(--radius);padding:16px 14px 15px;margin-bottom:14px}
+  background:var(--card);border:1px solid var(--line-soft);border-top-color:transparent;
+  border-top-left-radius:0;border-top-right-radius:0;border-radius:0 0 var(--radius) var(--radius);
+  padding:15px 14px 15px;margin-top:-1px;margin-bottom:14px}
 .status-cell{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
 .status-ico{width:23px;height:23px;margin-bottom:11px;display:grid;place-items:center}
 .status-ico svg{width:23px;height:23px}
@@ -250,12 +252,12 @@ svg{display:block}
    ============================================================ */
 
 .verdict-card{background:var(--card);border:1px solid var(--line-soft);
-  border-radius:var(--radius);padding:17px 17px 8px;margin-bottom:13px}
+  border-radius:var(--radius);padding:17px 17px 10px;margin-bottom:13px}
 .verdict-head{font-size:11.5px;font-weight:650;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
 .verdict{font-size:42px;font-weight:600;letter-spacing:-1.6px;line-height:1.08;margin-top:7px;color:var(--green)}
 .verdict-lead{font-size:14px;color:var(--body);line-height:1.5;margin-top:9px;letter-spacing:-.15px}
 
-.score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px;padding-bottom:11px}
+.score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;padding-top:14px;padding-bottom:11px;border-top:1px solid var(--line-soft)}
 .score-cell{min-width:0}
 .score-label{font-size:11.5px;color:var(--muted);letter-spacing:-.1px;white-space:nowrap}
 .score-val{font-size:18px;font-weight:600;letter-spacing:-.55px;margin-top:5px;color:var(--text);white-space:nowrap}

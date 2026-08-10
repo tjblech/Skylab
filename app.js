@@ -647,21 +647,21 @@ function renderTonight() {
 
 /* ---------- Worth Seeing ------------------------------------ */
 
-const THUMBED = new Set(['saturn', 'meteor', 'iss', 'moon', 'eclipse']);
+const THUMBED = new Set(['saturn', 'jupiter', 'mars', 'mercury', 'meteor', 'iss', 'moon', 'eclipse', 'venus', 'sun']);
 
 const ART = {
   moon:   'assets/moon-obj.png',
   saturn: 'assets/saturn-obj.png',
-  jupiter:'assets/saturn-obj.png',
-  mars:   'assets/saturn-obj.png',
-  venus:  'assets/saturn-obj.png',
-  mercury:'assets/saturn-obj.png',
+  jupiter:'assets/jupiter-obj.png',
+  mars:   'assets/mars-obj.png',
+  venus:  'assets/venus-obj.png',
+  mercury:'assets/mercury-obj.png',
   meteor: 'assets/meteor-obj.png',
   iss:    'assets/iss-obj.png',
   aurora: 'assets/card-space.jpg',
   sky:    'assets/sky-obj.jpg',
-  sun:    'assets/card-space.jpg',
-  eclipse:'assets/moon-obj.png'
+  sun:    'assets/sun-obj.png',
+  eclipse:'assets/eclipse-obj.png'
 };
 
 function activeShowers(date = new Date()) {
