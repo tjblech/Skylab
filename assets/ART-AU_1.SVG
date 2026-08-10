@@ -1,0 +1,22 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 140'>
+  <defs>
+    <linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='#020814'/>
+      <stop offset='1' stop-color='#081424'/>
+    </linearGradient>
+    <linearGradient id='a1' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0' stop-color='#1aff9a' stop-opacity='0'/>
+      <stop offset='.2' stop-color='#74ffbf' stop-opacity='.4'/>
+      <stop offset='.55' stop-color='#63ffc4' stop-opacity='.65'/>
+      <stop offset='.85' stop-color='#7af0ff' stop-opacity='.16'/>
+      <stop offset='1' stop-color='#7af0ff' stop-opacity='0'/>
+    </linearGradient>
+    <filter id='blur'><feGaussianBlur stdDeviation='7'/></filter>
+  </defs>
+  <rect width='240' height='140' fill='url(#bg)'/>
+  <g opacity='.8' filter='url(#blur)'>
+    <path d='M0 90C35 102 70 76 108 86s50 18 72 8 40-22 60-20v42H0Z' fill='url(#a1)'/>
+    <path d='M0 72c42 12 66-12 108-2s56 26 88 18 34-12 44-10v32H0Z' fill='url(#a1)' opacity='.8'/>
+  </g>
+  <path d='M0 111c54-4 101-20 154-16 30 2 56 12 86 12v33H0Z' fill='#020814'/>
+</svg>
