@@ -50,41 +50,67 @@
 </section>
 <section class="page" data-page="tonight">
   <div class="eyebrow" id="tonightDate">Tonight</div>
-  <div class="summary-block"><div class="link-kicker">Worth going outside?</div><div class="headline" id="worthOutside">CALCULATING</div><div class="lead" id="tonightSummary">Combining clouds, precipitation, visibility, darkness and moonlight.</div><div class="score-row">
-    <div><div class="score-label">Sky score</div><div class="score-val" id="tSky">—</div><div class="mini-track"><div class="mini-fill" id="tSkyBar"></div></div></div>
-    <div><div class="score-label">Clouds</div><div class="score-val" id="tCloud">—</div><div class="mini-track"><div class="mini-fill" id="tCloudBar"></div></div></div>
-    <div><div class="score-label">Moon</div><div class="score-val" id="tMoon">—</div><div class="mini-track"><div class="mini-fill" id="tMoonBar"></div></div></div>
-    <div><div class="score-label">Visibility</div><div class="score-val" id="tVis">—</div><div class="mini-track"><div class="mini-fill" id="tVisBar"></div></div></div>
-  </div></div>
-  <div class="window"><div class="link-kicker">Best window</div><div class="window-time" id="bestWindow">—</div><div class="quality-bars" id="qualityBars"></div><div class="axis-row"><span>8 PM</span><span>10 PM</span><span>12 AM</span><span>2 AM</span><span>4 AM</span></div></div>
-  <div class="section-title">Light & darkness</div><div id="lightEvents"></div>
-  <div class="section-title">Worth seeing</div><div id="visibleEvents"></div>
-  <div class="section-title">Aurora</div><div class="aurora-meter"><div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div><div><div class="event-title" id="auroraTitle">Checking geomagnetic conditions</div><div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div></div></div>
-  <div class="source-note">Sky score is a practical viewing estimate, not a professional seeing forecast. It answers a simpler question: how worthwhile is it to look up tonight?</div>
+  <div class="summary-block tonight-summary">
+    <div class="link-kicker">WORTH GOING OUTSIDE?</div>
+    <div class="headline" id="worthOutside">CALCULATING</div>
+    <div class="lead" id="tonightSummary">Combining clouds, precipitation, visibility, darkness and moonlight.</div>
+    <div class="score-row">
+      <div><div class="score-label">Sky Score</div><div class="score-val" id="tSky">—</div><div class="score-note" id="tSkyNote">—</div><div class="mini-track"><div class="mini-fill" id="tSkyBar"></div></div></div>
+      <div><div class="score-label">Clouds</div><div class="score-val" id="tCloud">—</div><div class="score-note" id="tCloudNote">—</div><div class="mini-track"><div class="mini-fill" id="tCloudBar"></div></div></div>
+      <div><div class="score-label">Seeing</div><div class="score-val" id="tMoon">—</div><div class="score-note" id="tMoonNote">—</div><div class="mini-track"><div class="mini-fill" id="tMoonBar"></div></div></div>
+      <div><div class="score-label">Transparency</div><div class="score-val" id="tVis">—</div><div class="score-note" id="tVisNote">—</div><div class="mini-track"><div class="mini-fill" id="tVisBar"></div></div></div>
+    </div>
+  </div>
+  <div class="window preview-window"><div class="link-kicker">Best Window</div><div class="window-time" id="bestWindow">—</div><div class="quality-bars" id="qualityBars"></div><div class="axis-row"><span>8 PM</span><span>10 PM</span><span>12 AM</span><span>2 AM</span><span>4 AM</span></div></div>
+  <div class="section-title preview-section-title">Worth Seeing</div><div id="visibleEvents"></div>
+  <div class="section-title preview-section-title">Aurora</div><div class="aurora-meter"><div><div class="event-title" id="auroraTitle">Checking geomagnetic conditions</div><div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div></div><div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div></div>
+  <details class="secondary-details"><summary>Light & photography</summary><div id="lightEvents"></div></details>
+  <div class="source-note">Sky score is a practical viewing estimate, not a professional seeing forecast.</div>
 </section>
 <section class="page" data-page="weather">
   <div class="eyebrow">Weather · <span id="weatherLocation">—</span></div>
-  <div class="hero weather-hero" id="weatherHero"><div class="hero-temp" id="wTemp">—<span class="degree">°</span></div><div class="hero-condition" id="wCond">—</div><div class="hero-sub" id="wSub">Best-match forecast</div></div>
-  <div class="segmented"><button class="segment active" data-weather-tab="forecast">Forecast</button><button class="segment" data-weather-tab="details">Atmosphere</button><button class="segment" data-weather-tab="radar">Radar</button></div>
-  <div id="weatherForecastPanel"><div class="chart-wrap"><svg class="chart" id="tempChart" viewBox="0 0 560 180"></svg></div><div class="hour-strip" id="hourStrip"></div><div class="section-title">10-day forecast</div><div id="dailyForecast"></div><div class="advanced-callout" id="modelCompareBtn"><div class="advanced-copy"><strong>Model comparison</strong><div>See how ECMWF, GFS and ICON compare.</div></div><span class="pill">ADVANCED</span></div></div>
-  <div id="weatherDetailsPanel" class="hidden"><div class="status-grid">
-    <div class="status-cell"><div class="status-name">Dew point</div><div class="status-value" id="dDew">—</div><div class="status-desc">Moisture comfort</div></div>
-    <div class="status-cell"><div class="status-name">CAPE</div><div class="status-value" id="dCape">—</div><div class="status-desc" id="dCapeText">Convective energy</div></div>
-    <div class="status-cell"><div class="status-name">Cloud base</div><div class="status-value" id="dCloudBase">—</div><div class="status-desc">Estimated altitude</div></div>
-    <div class="status-cell"><div class="status-name">Freezing level</div><div class="status-value" id="dFreeze">—</div><div class="status-desc">Estimated altitude</div></div>
-  </div><div class="section-title">Cloud layers</div><div id="cloudLayers"></div><div class="section-title">Solar & atmosphere</div><div class="data-strip"><div><div class="metric-label">Radiation</div><div class="metric-value" id="dSolar">—</div><div class="metric-note">W/m²</div></div><div><div class="metric-label">Rain rate</div><div class="metric-value" id="dRain">—</div><div class="metric-note">in/hr</div></div><div><div class="metric-label">Gust</div><div class="metric-value" id="dGust">—</div><div class="metric-note">mph</div></div><div><div class="metric-label">UV</div><div class="metric-value" id="dUv">—</div><div class="metric-note">index</div></div></div></div>
-  <div id="weatherRadarPanel" class="hidden"><div class="radar-wrap"><div id="radarMap"></div></div><div class="source-note" id="radarNote">Loading radar…</div></div>
+  <div class="hero weather-hero" id="weatherHero"><div class="hero-temp" id="wTemp">—<span class="degree">°F</span></div><div class="hero-condition" id="wCond">—</div><div class="hero-sub" id="wSub">Best-match forecast</div></div>
+  <div class="weather-top-strip">
+    <div><div class="metric-label">H / L</div><div class="metric-value" id="wHighLow">—</div></div>
+    <div><div class="metric-label">Humidity</div><div class="metric-value" id="wHumidity">—</div></div>
+    <div><div class="metric-label">Pressure</div><div class="metric-value" id="wPressure">—</div></div>
+  </div>
+  <div class="weather-card rain-card">
+    <div class="weather-card-head"><div><div class="link-kicker">Rain Chances</div><div class="rain-big" id="rainChance">—</div><div class="event-meta">Today</div></div></div>
+    <svg class="mini-weather-chart" id="precipChart" viewBox="0 0 300 70" aria-label="Rain chance chart"></svg>
+  </div>
+  <div class="weather-card hourly-card"><div class="link-kicker">Hourly Forecast</div><div class="hour-strip" id="hourStrip"></div></div>
+  <div class="section-title weather-section-title">10-Day Forecast</div><div id="dailyForecast" class="weather-daily"></div>
+  <details class="secondary-details weather-advanced"><summary>Advanced weather</summary>
+    <div class="segmented"><button class="segment active" data-weather-tab="forecast">Temperature</button><button class="segment" data-weather-tab="details">Atmosphere</button><button class="segment" data-weather-tab="radar">Radar</button></div>
+    <div id="weatherForecastPanel"><div class="chart-wrap"><svg class="chart" id="tempChart" viewBox="0 0 560 180"></svg></div><div class="advanced-callout" id="modelCompareBtn"><div class="advanced-copy"><strong>Model comparison</strong><div>See how ECMWF, GFS and ICON compare.</div></div><span class="pill">ADVANCED</span></div></div>
+    <div id="weatherDetailsPanel" class="hidden"><div class="status-grid">
+      <div class="status-cell"><div class="status-name">Dew point</div><div class="status-value" id="dDew">—</div><div class="status-desc">Moisture comfort</div></div>
+      <div class="status-cell"><div class="status-name">CAPE</div><div class="status-value" id="dCape">—</div><div class="status-desc" id="dCapeText">Convective energy</div></div>
+      <div class="status-cell"><div class="status-name">Cloud base</div><div class="status-value" id="dCloudBase">—</div><div class="status-desc">Estimated altitude</div></div>
+      <div class="status-cell"><div class="status-name">Freezing level</div><div class="status-value" id="dFreeze">—</div><div class="status-desc">Estimated altitude</div></div>
+    </div><div class="section-title">Cloud layers</div><div id="cloudLayers"></div><div class="section-title">Solar & atmosphere</div><div class="data-strip"><div><div class="metric-label">Radiation</div><div class="metric-value" id="dSolar">—</div><div class="metric-note">W/m²</div></div><div><div class="metric-label">Rain rate</div><div class="metric-value" id="dRain">—</div><div class="metric-note">in/hr</div></div><div><div class="metric-label">Gust</div><div class="metric-value" id="dGust">—</div><div class="metric-note">mph</div></div><div><div class="metric-label">UV</div><div class="metric-value" id="dUv">—</div><div class="metric-note">index</div></div></div></div>
+    <div id="weatherRadarPanel" class="hidden"><div class="radar-wrap"><div id="radarMap"></div></div><div class="source-note" id="radarNote">Loading radar…</div></div>
+  </details>
 </section>
 <section class="page" data-page="space">
-  <div class="eyebrow">Space weather · live near Earth</div><div class="link-kicker">Geomagnetic</div><div class="kp-head"><div class="kp-number" id="kpValue">—</div><span class="pill" id="kpLabel">LOADING</span></div><div class="kp-scale" id="kpScale"></div><div class="metric-note">Planetary Kp index · 0 quiet → 9 extreme</div>
-  <div class="solar-grid"><div class="solar-cell"><div class="status-name">Solar wind</div><div class="solar-val" id="solarWind">—</div><div class="status-desc" id="solarWindDesc">km/s</div></div><div class="solar-cell"><div class="status-name">IMF Bz</div><div class="solar-val" id="bz">—</div><div class="status-desc" id="bzDesc">nT</div></div><div class="solar-cell"><div class="status-name">Density</div><div class="solar-val" id="density">—</div><div class="status-desc">p/cm³</div></div><div class="solar-cell"><div class="status-name">Magnetic field Bt</div><div class="solar-val" id="bt">—</div><div class="status-desc">nT</div></div></div>
-  <div class="section-title">GOES X-ray activity · 6 hours</div><div class="chart-wrap"><svg class="chart" id="xrayChart" viewBox="0 0 560 160"></svg></div>
-  <div class="section-title">Recent solar events</div><div id="flareList"><div class="event-meta">Loading NOAA / NASA feeds…</div></div>
-  <div class="section-title">NOAA space-weather scales</div><div id="noaaScales"></div>
-  <div class="source-note">Operational status comes from NOAA SWPC. NASA DONKI is supplemental context; NOAA remains the official U.S. source for forecasts and warnings.</div>
+  <div class="eyebrow">Space weather · live near Earth</div>
+  <div class="link-kicker space-section-label">Geomagnetic</div>
+  <div class="geomag-card"><div class="kp-inline"><span class="kp-prefix">Kp</span><span class="kp-number" id="kpValue">—</span><span class="kp-status" id="kpLabel">LOADING</span></div><div class="kp-scale" id="kpScale"></div></div>
+  <div class="solar-grid"><div class="solar-cell"><div class="status-name">Solar Wind</div><div class="solar-val" id="solarWind">—</div><div class="status-desc" id="solarWindDesc">km/s</div></div><div class="solar-cell"><div class="status-name">IMF Bz</div><div class="solar-val" id="bz">—</div><div class="status-desc" id="bzDesc">nT</div></div><div class="solar-cell"><div class="status-name">Density</div><div class="solar-val" id="density">—</div><div class="status-desc">p/cm³</div></div><div class="solar-cell"><div class="status-name">Bt</div><div class="solar-val" id="bt">—</div><div class="status-desc">nT</div></div></div>
+  <div class="space-compact-card"><div class="link-kicker">Solar Flares (24h)</div><div id="flareList"><div class="event-meta">Loading NOAA / NASA feeds…</div></div></div>
+  <div class="space-compact-card sunspot-card"><div><div class="link-kicker">Sunspot Number</div><div class="sunspot-number" id="sunspotNumber">—</div></div><svg id="sunspotChart" class="sunspot-chart" viewBox="0 0 210 48"></svg></div>
+  <div class="space-compact-card radiation-card"><div><div class="link-kicker">Radiation Storm</div><div class="radiation-code" id="radiationScale">S0</div></div><div class="radiation-state" id="radiationDesc">None</div></div>
+  <details class="secondary-details space-advanced"><summary>Advanced space weather</summary>
+    <div class="section-title">GOES X-ray activity · 6 hours</div><div class="chart-wrap"><svg class="chart" id="xrayChart" viewBox="0 0 560 160"></svg></div>
+    <div class="section-title">NOAA space-weather scales</div><div id="noaaScales"></div>
+    <div class="source-note">Operational status comes from NOAA SWPC. NASA DONKI is supplemental context.</div>
+  </details>
 </section>
 <section class="page" data-page="calendar">
-  <div class="calendar-head"><div><div class="eyebrow">Sky calendar</div><div class="month-title">Coming up</div></div><span class="pill">LOCAL TIMES</span></div><div id="calendarEvents"><div class="event-meta">Calculating astronomical events…</div></div><div class="source-note">Sun, Moon, planet and eclipse calculations run locally with Astronomy Engine. Meteor showers are labeled as annual peak windows.</div>
+  <div class="calendar-top"><div class="month-line"><span id="calendarMonth">—</span><span class="month-arrow">›</span></div><div class="calendar-week" id="calendarWeek"></div></div>
+  <div id="calendarEvents"><div class="event-meta">Calculating astronomical events…</div></div>
+  <div class="source-note">Sun, Moon, planet and eclipse calculations run locally with Astronomy Engine.</div>
 </section>
 </main>
 </div>
