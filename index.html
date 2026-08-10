@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071017">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SKYLAB">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<title>SKYLAB — Live Earth & Sky</title>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="mark"></div><div class="brand-name">SKYLAB</div></div>
+  <button class="location-btn" id="locationBtn"><span class="location-dot"></span><span id="locationName">Choose location</span><span>⌄</span></button>
+</header>
+<div class="loader" id="loader"></div>
+<div class="error-banner" id="errorBanner"></div>
+<main>
+<section class="page active" data-page="now">
+  <div class="eyebrow"><span class="live-dot" id="updatedLabel">Waiting for location</span></div>
+  <div class="hero"><div class="hero-line"><div class="weather-orb" id="weatherOrb"><div class="orb-moon"></div></div><div><div class="hero-temp" id="nowTemp">—<span class="degree">°</span></div><div class="hero-condition" id="nowCondition">Ready when you are</div><div class="hero-sub" id="feelsLike">Use your location for live conditions.</div></div></div></div>
+  <div class="data-strip">
+    <div><div class="metric-label">Humidity</div><div class="metric-value" id="humidity">—</div><div class="metric-note" id="dewpoint">Dew —</div></div>
+    <div><div class="metric-label">Pressure</div><div class="metric-value" id="pressure">—</div><div class="metric-note">Sea level</div></div>
+    <div><div class="metric-label">Wind</div><div class="metric-value" id="wind">—</div><div class="metric-note" id="gust">Gust —</div></div>
+    <div><div class="metric-label">Visibility</div><div class="metric-value" id="visibility">—</div><div class="metric-note" id="visDesc">—</div></div>
+  </div>
+  <div class="briefing" id="nowBriefing">SKYLAB translates the raw forecast into a short briefing here.</div>
+  <div class="status-grid">
+    <div class="status-cell"><div class="status-head"><span class="status-name">Air quality</span><span class="status-icon">◌</span></div><div class="status-value" id="aqi">—</div><div class="status-desc" id="aqiText">Waiting for data</div></div>
+    <div class="status-cell"><div class="status-head"><span class="status-name">UV index</span><span class="status-icon">☼</span></div><div class="status-value" id="uv">—</div><div class="status-desc" id="uvText">Waiting for data</div></div>
+    <div class="status-cell"><div class="status-head"><span class="status-name">Sky score</span><span class="status-icon">✦</span></div><div class="status-value" id="skyScore">—</div><div class="status-desc" id="skyScoreText">Tonight</div></div>
+    <div class="status-cell"><div class="status-head"><span class="status-name">Alerts</span><span class="status-icon">⌁</span></div><div class="status-value" id="alertCount">—</div><div class="status-desc" id="alertText">NWS</div></div>
+  </div>
+  <div class="link-row" data-go="tonight"><div><div class="link-kicker">Tonight</div><div class="link-main" id="tonightTeaser">We’ll find the best sky window.</div></div><div class="chev">›</div></div>
+  <div class="link-row" data-go="space"><div><div class="link-kicker">Space weather</div><div class="link-main" id="spaceTeaser">Loading solar conditions…</div></div><div class="chev">›</div></div>
+  <div class="link-row" data-go="calendar"><div><div class="link-kicker">Next notable event</div><div class="link-main" id="nextEventTeaser">Calculating the sky…</div></div><div class="chev">›</div></div>
+</section>
+<section class="page" data-page="tonight">
+  <div class="eyebrow" id="tonightDate">Tonight</div>
+  <div class="summary-block"><div class="link-kicker">Worth going outside?</div><div class="headline" id="worthOutside">CALCULATING</div><div class="lead" id="tonightSummary">Combining clouds, precipitation, visibility, darkness and moonlight.</div><div class="score-row">
+    <div><div class="score-label">Sky score</div><div class="score-val" id="tSky">—</div><div class="mini-track"><div class="mini-fill" id="tSkyBar"></div></div></div>
+    <div><div class="score-label">Clouds</div><div class="score-val" id="tCloud">—</div><div class="mini-track"><div class="mini-fill" id="tCloudBar"></div></div></div>
+    <div><div class="score-label">Moon</div><div class="score-val" id="tMoon">—</div><div class="mini-track"><div class="mini-fill" id="tMoonBar"></div></div></div>
+    <div><div class="score-label">Visibility</div><div class="score-val" id="tVis">—</div><div class="mini-track"><div class="mini-fill" id="tVisBar"></div></div></div>
+  </div></div>
+  <div class="window"><div class="link-kicker">Best window</div><div class="window-time" id="bestWindow">—</div><div class="quality-bars" id="qualityBars"></div><div class="axis-row"><span>8 PM</span><span>10 PM</span><span>12 AM</span><span>2 AM</span><span>4 AM</span></div></div>
+  <div class="section-title">Light & darkness</div><div id="lightEvents"></div>
+  <div class="section-title">Worth seeing</div><div id="visibleEvents"></div>
+  <div class="section-title">Aurora</div><div class="aurora-meter"><div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div><div><div class="event-title" id="auroraTitle">Checking geomagnetic conditions</div><div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div></div></div>
+  <div class="source-note">Sky score is a practical viewing estimate, not a professional seeing forecast. It answers a simpler question: how worthwhile is it to look up tonight?</div>
+</section>
+<section class="page" data-page="weather">
+  <div class="eyebrow">Weather · <span id="weatherLocation">—</span></div>
+  <div class="hero"><div class="hero-temp" id="wTemp">—<span class="degree">°</span></div><div class="hero-condition" id="wCond">—</div><div class="hero-sub" id="wSub">Best-match forecast</div></div>
+  <div class="segmented"><button class="segment active" data-weather-tab="forecast">Forecast</button><button class="segment" data-weather-tab="details">Atmosphere</button><button class="segment" data-weather-tab="radar">Radar</button></div>
+  <div id="weatherForecastPanel"><div class="chart-wrap"><svg class="chart" id="tempChart" viewBox="0 0 560 180"></svg></div><div class="hour-strip" id="hourStrip"></div><div class="section-title">10-day forecast</div><div id="dailyForecast"></div><div class="advanced-callout" id="modelCompareBtn"><div class="advanced-copy"><strong>Model comparison</strong><div>See how ECMWF, GFS and ICON compare.</div></div><span class="pill">ADVANCED</span></div></div>
+  <div id="weatherDetailsPanel" class="hidden"><div class="status-grid">
+    <div class="status-cell"><div class="status-name">Dew point</div><div class="status-value" id="dDew">—</div><div class="status-desc">Moisture comfort</div></div>
+    <div class="status-cell"><div class="status-name">CAPE</div><div class="status-value" id="dCape">—</div><div class="status-desc" id="dCapeText">Convective energy</div></div>
+    <div class="status-cell"><div class="status-name">Cloud base</div><div class="status-value" id="dCloudBase">—</div><div class="status-desc">Estimated altitude</div></div>
+    <div class="status-cell"><div class="status-name">Freezing level</div><div class="status-value" id="dFreeze">—</div><div class="status-desc">Estimated altitude</div></div>
+  </div><div class="section-title">Cloud layers</div><div id="cloudLayers"></div><div class="section-title">Solar & atmosphere</div><div class="data-strip"><div><div class="metric-label">Radiation</div><div class="metric-value" id="dSolar">—</div><div class="metric-note">W/m²</div></div><div><div class="metric-label">Rain rate</div><div class="metric-value" id="dRain">—</div><div class="metric-note">in/hr</div></div><div><div class="metric-label">Gust</div><div class="metric-value" id="dGust">—</div><div class="metric-note">mph</div></div><div><div class="metric-label">UV</div><div class="metric-value" id="dUv">—</div><div class="metric-note">index</div></div></div></div>
+  <div id="weatherRadarPanel" class="hidden"><div class="radar-wrap"><div id="radarMap"></div></div><div class="source-note" id="radarNote">Loading radar…</div></div>
+</section>
+<section class="page" data-page="space">
+  <div class="eyebrow">Space weather · live near Earth</div><div class="link-kicker">Geomagnetic</div><div class="kp-head"><div class="kp-number" id="kpValue">—</div><span class="pill" id="kpLabel">LOADING</span></div><div class="kp-scale" id="kpScale"></div><div class="metric-note">Planetary Kp index · 0 quiet → 9 extreme</div>
+  <div class="solar-grid"><div class="solar-cell"><div class="status-name">Solar wind</div><div class="solar-val" id="solarWind">—</div><div class="status-desc" id="solarWindDesc">km/s</div></div><div class="solar-cell"><div class="status-name">IMF Bz</div><div class="solar-val" id="bz">—</div><div class="status-desc" id="bzDesc">nT</div></div><div class="solar-cell"><div class="status-name">Density</div><div class="solar-val" id="density">—</div><div class="status-desc">p/cm³</div></div><div class="solar-cell"><div class="status-name">Magnetic field Bt</div><div class="solar-val" id="bt">—</div><div class="status-desc">nT</div></div></div>
+  <div class="section-title">GOES X-ray activity · 6 hours</div><div class="chart-wrap"><svg class="chart" id="xrayChart" viewBox="0 0 560 160"></svg></div>
+  <div class="section-title">Recent solar events</div><div id="flareList"><div class="event-meta">Loading NOAA / NASA feeds…</div></div>
+  <div class="section-title">NOAA space-weather scales</div><div id="noaaScales"></div>
+  <div class="source-note">Operational status comes from NOAA SWPC. NASA DONKI is supplemental context; NOAA remains the official U.S. source for forecasts and warnings.</div>
+</section>
+<section class="page" data-page="calendar">
+  <div class="calendar-head"><div><div class="eyebrow">Sky calendar</div><div class="month-title">Coming up</div></div><span class="pill">LOCAL TIMES</span></div><div id="calendarEvents"><div class="event-meta">Calculating astronomical events…</div></div><div class="source-note">Sun, Moon, planet and eclipse calculations run locally with Astronomy Engine. Meteor showers are labeled as annual peak windows.</div>
+</section>
+</main>
+</div>
+<nav class="nav"><button class="nav-btn active" data-nav="now"><div class="nav-icon">⌾</div>Now</button><button class="nav-btn" data-nav="tonight"><div class="nav-icon">☾</div>Tonight</button><button class="nav-btn" data-nav="weather"><div class="nav-icon">☁</div>Weather</button><button class="nav-btn" data-nav="space"><div class="nav-icon">⌁</div>Space</button><button class="nav-btn" data-nav="calendar"><div class="nav-icon">□</div>Calendar</button></nav>
+<div class="modal" id="locationModal"><div class="sheet"><div class="sheet-head"><div class="sheet-title">Location</div><button class="icon-btn close" data-close="locationModal">×</button></div><button class="primary" id="useLocation">Use my current location</button><div class="section-title">Presets</div><button class="preset" data-lat="41.4473" data-lon="-71.5249" data-name="South Kingstown, RI"><span>South Kingstown<small>Rhode Island</small></span><span>›</span></button><button class="preset" data-lat="42.3601" data-lon="-71.0589" data-name="Boston, MA"><span>Boston<small>Massachusetts</small></span><span>›</span></button><button class="preset" data-lat="40.7128" data-lon="-74.0060" data-name="New York, NY"><span>New York<small>New York</small></span><span>›</span></button><div class="source-note">Your coordinates stay on this device except when sent to the data providers required to return local conditions.</div></div></div>
+<div class="modal" id="modelModal"><div class="sheet"><div class="sheet-head"><div><div class="sheet-title">Model comparison</div><div class="event-meta" id="modelTime">Next 24 hours</div></div><button class="icon-btn close" data-close="modelModal">×</button></div><div id="modelRows"><div class="event-meta">Loading models…</div></div><div class="consensus"><div class="link-kicker">Consensus</div><div class="headline" id="modelConsensus">—</div><div class="lead" id="modelConsensusDesc">Comparing available forecasts.</div><div class="model-agreement"><div><div class="link-kicker">Model agreement</div><div class="event-title" id="agreementText">—</div></div><div class="agreement-ring" id="agreementRing">—</div></div></div><div class="source-note">The main forecast uses Open-Meteo’s best-match blend. This view exposes disagreement instead of pretending one model is universally best.</div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="app.js"></script>
+</body>
+</html>
