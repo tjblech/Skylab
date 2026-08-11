@@ -1,7 +1,7 @@
-const CACHE = 'skylab-shell-v14';
+const CACHE = 'skylab-shell-v15';
 
 const SHELL = [
-  './', './index.html', './app.css?v=14', './app.js?v=12', './manifest.webmanifest',
+  './', './index.html', './app.css?v=15', './app.js?v=15', './manifest.webmanifest',
   './assets/card-space.jpg',
   './assets/icon-192.png',
   './assets/icon-512.png',
@@ -14,12 +14,12 @@ const SHELL = [
   './assets/saturn-obj.png',
   './assets/sky-obj.jpg',
   './assets/venus-obj.png',
-  './assets/space-backdrop.png',
   './assets/jupiter-obj.png',
   './assets/mars-obj.png',
   './assets/mercury-obj.png',
   './assets/sun-obj.png',
-  './assets/eclipse-obj.png'
+  './assets/eclipse-obj.png',
+  './assets/light-pollution-atlas-2025.png'
 ];
 
 self.addEventListener('install', e => e.waitUntil(

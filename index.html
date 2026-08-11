@@ -11,7 +11,7 @@
 <meta name="description" content="Live conditions. Above and around you. Weather, space weather, astronomy and air quality in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
-<link rel="stylesheet" href="app.css?v=14">
+<link rel="stylesheet" href="app.css?v=15">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <title>SKYLAB — Live Earth &amp; Sky</title>
 </head>
@@ -247,6 +247,29 @@
         <div class="event-meta" id="auroraDesc">Local potential considers Kp, solar wind, Bz and latitude.</div>
       </div>
       <div class="aurora-ring" id="auroraRing"><span id="auroraPct">—</span></div>
+    </div>
+
+    <div class="section-title">Light Pollution</div>
+    <div class="light-pollution-card" id="lightPollutionCard">
+      <div class="lp-head">
+        <div>
+          <div class="kicker">Artificial sky brightness</div>
+          <div class="lp-zone" id="lpZone">Loading…</div>
+          <div class="event-meta" id="lpSummary">Reading the 2025 light-pollution atlas for this location.</div>
+        </div>
+        <div class="lp-sqm"><span id="lpSqm">—</span><small>mag/arcsec²</small></div>
+      </div>
+      <div class="lp-scale" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <i id="lpMarker"></i>
+      </div>
+      <div class="lp-scale-labels"><span>Darker</span><span>Brighter</span></div>
+      <div class="lp-facts">
+        <div><span>Light level</span><strong id="lpLevel">—</strong></div>
+        <div><span>Milky Way</span><strong id="lpMilkyWay">—</strong></div>
+      </div>
+      <div class="lp-foot">2025 Light Pollution Atlas · simulated zenith brightness, not a Bortle measurement</div>
     </div>
 
     <button class="link-tile" data-go="astronomy" style="margin-top:16px">
@@ -542,6 +565,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

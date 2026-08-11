@@ -16,7 +16,7 @@ const qa = (s, r = document) => [...r.querySelectorAll(s)];
 const state = {
   lat: null, lon: null, name: '',
   weather: null, air: null, alerts: [],
-  space: {},
+  space: {}, lightPollution: null,
   astro: { events: [], planets: [], moon: null, highlights: [] },
   models: null, modelTab: 'temperature',
   radar: { frames: [], idx: 0, playing: false, timer: null, layers: { radar: true, clouds: false, base: 0 } },
@@ -483,6 +483,7 @@ function renderAll() {
   if (!state.weather) return;
   renderNow();
   renderTonight();
+  renderLightPollution();
   renderWeather();
   renderSpace();
   renderAstronomy();
@@ -864,6 +865,70 @@ function renderAurora() {
   $('auroraDesc').textContent = Number.isFinite(kp)
     ? `Kp ${fmt(kp, 1)}${Number.isFinite(bz) ? ` · Bz ${fmt(bz, 1)} nT` : ''}. Local heuristic, not an official probability.`
     : 'Live geomagnetic data is unavailable.';
+}
+
+
+/* ---------- LIGHT POLLUTION -------------------------------- */
+
+const LP_COLORS = [
+  [0,0,0,'0'],[34,34,34,'1a'],[66,66,66,'1b'],[20,47,114,'2a'],[33,84,216,'2b'],
+  [15,87,20,'3a'],[31,161,42,'3b'],[110,100,30,'4a'],[184,166,37,'4b'],
+  [191,100,30,'5a'],[253,150,80,'5b'],[251,90,73,'6a'],[251,153,138,'6b'],
+  [160,160,160,'7a'],[242,242,242,'7b']
+];
+let lpAtlasPromise = null;
+
+function loadLpAtlas(){
+  if (lpAtlasPromise) return lpAtlasPromise;
+  lpAtlasPromise = new Promise((resolve,reject)=>{
+    const img = new Image();
+    img.onload = () => {
+      const c=document.createElement('canvas'); c.width=img.naturalWidth; c.height=img.naturalHeight;
+      const ctx=c.getContext('2d',{willReadFrequently:true}); ctx.drawImage(img,0,0);
+      resolve({ctx,w:c.width,h:c.height});
+    };
+    img.onerror=reject;
+    img.src='assets/light-pollution-atlas-2025.png';
+  });
+  return lpAtlasPromise;
+}
+
+function lpNearest(r,g,b){
+  let best=0,dist=Infinity;
+  LP_COLORS.forEach((c,i)=>{const d=(r-c[0])**2+(g-c[1])**2+(b-c[2])**2;if(d<dist){dist=d;best=i}});
+  return best;
+}
+
+function lpInfo(index){
+  const bounds=[0.018,0.037,0.064,0.111,0.192,0.333,0.577,1,1.732,3,5.196,9,15.588,27,46.765,81];
+  const lo=bounds[index], hi=bounds[index+1];
+  const lpi=Math.sqrt(lo*hi);
+  const sqm=22-2.5*Math.log10(1+lpi);
+  const level=index<=2?'Very low':index<=4?'Low':index<=6?'Moderate':index<=8?'Noticeable':index<=10?'High':index<=12?'Very high':'Extreme';
+  const mw=sqm>=21.5?'Strong':sqm>=20.8?'Clearly visible':sqm>=20.1?'Visible, washed out':sqm>=19.3?'Faint':'Mostly hidden';
+  return {zone:LP_COLORS[index][3],sqm,level,mw,lpi};
+}
+
+async function renderLightPollution(){
+  const card=$('lightPollutionCard'); if(!card || !Number.isFinite(state.lat) || !Number.isFinite(state.lon)) return;
+  if(state.lat>75 || state.lat<-65){$('lpZone').textContent='Outside atlas coverage';$('lpSummary').textContent='The 2025 atlas covers 65°S to 75°N.';return;}
+  try{
+    const a=await loadLpAtlas();
+    const x=Math.max(0,Math.min(a.w-1,Math.floor((state.lon+180)/360*a.w)));
+    const y=Math.max(0,Math.min(a.h-1,Math.floor((75-state.lat)/140*a.h)));
+    const p=a.ctx.getImageData(x,y,1,1).data;
+    const idx=lpNearest(p[0],p[1],p[2]); const info=lpInfo(idx); state.lightPollution={...info,index:idx};
+    $('lpZone').textContent=`Zone ${info.zone}`;
+    $('lpSummary').textContent=`${info.level} artificial skyglow at zenith`;
+    $('lpSqm').textContent=info.sqm.toFixed(1);
+    $('lpLevel').textContent=info.level;
+    $('lpMilkyWay').textContent=info.mw;
+    $('lpMarker').style.left=`${(idx/14)*100}%`;
+  }catch(e){
+    $('lpZone').textContent='Unavailable';
+    $('lpSummary').textContent='Could not read the bundled light-pollution atlas.';
+    $('lpSqm').textContent='—'; $('lpLevel').textContent='—'; $('lpMilkyWay').textContent='—';
+  }
 }
 
 /* ---------- WEATHER ---------------------------------------- */
